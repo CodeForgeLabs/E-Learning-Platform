@@ -1,13 +1,13 @@
-package com.example.peer2peer;
+package com.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Peer2PeerApplication {
+public class ServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Peer2PeerApplication.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
 
 }
