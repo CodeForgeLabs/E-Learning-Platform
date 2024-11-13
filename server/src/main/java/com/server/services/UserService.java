@@ -3,6 +3,7 @@ package com.server.services;
 import com.server.models.User;
 import com.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,13 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User saveUser(User user){
+    @Autowired
+    private  BCryptPasswordEncoder passwordEncoder;
+
+
+    public User saveUser(User user) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -34,6 +41,30 @@ public class UserService {
     public Optional<User> findByUsername(String username){
         Optional<User> optionalUser = userRepository.findByUsername(username);
         return optionalUser;
+    }
+
+    //this checks if the pas
+    public boolean checkPassword(String rawPassword, String hashedPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        System.out.println("in checkPassword method");
+        if (passwordEncoder.matches(rawPassword, hashedPassword)){
+            System.out.println("Password matches");
+            return true;// match plain password with hashed password
+        } else {
+            System.out.println("Incorrect Password");
+            return false;
+        }
+    }
+
+    //this looks for a user by the username and email
+    //if one of them exists in the database, then the user exists
+    public Optional<User> findByUsernameOrEmail(String username, String email) {
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+        if (userByEmail.isPresent()) {
+            return userByEmail;
+        } else {
+            return userRepository.findByUsername(username);
+        }
     }
 
     //deletes a user by identifying with the id
