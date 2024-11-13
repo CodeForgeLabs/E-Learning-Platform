@@ -3,6 +3,8 @@
 import "./globals.css";
 import { store } from './store'
 import { Provider } from 'react-redux'
+import Navbar from "./components/Navbar";
+import { useState } from "react";
 
 
 export default function RootLayout({
@@ -10,10 +12,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [theme , setTheme] = useState("mywhitetheme")
   return (
     <Provider store={store}>
-         <html lang="en" data-theme = "myblacktheme">
+      
+         <html lang="en" data-theme = {theme}>
+         
+          
       <body>
+      <Navbar setTheme = {setTheme}/>
         {children}
       </body>
     </html>
