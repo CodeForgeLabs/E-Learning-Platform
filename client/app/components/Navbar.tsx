@@ -1,7 +1,10 @@
+"use client"
 import React from 'react'
 import ThemeController from './ThemeController'
+import { useRouter } from 'next/navigation'
 
 const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
+  const router  = useRouter()
   return (<div className='flex-col   justify-center items-center'>
     <div className="flex justify-between border-b-[1px] border-base-300 navbar bg-base-100 ">
   <div className="navbar-start">
@@ -33,10 +36,10 @@ const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
             <li><a>Submenu 2</a></li>
           </ul>
         </li>
-        <li><a>Ideas</a></li>
+        <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl">Peer to Peer</a>
+    <a className="btn btn-ghost text-xl" onClick={() => router.push("/")}>Peer to Peer</a>
   </div>
 
 
@@ -46,13 +49,14 @@ const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
       <li>
         <details>
           <summary>Get started</summary>
-          <ul className="p-2">
-            <li><a>Submenu 1</a></li>
-            <li><a>Submenu 2</a></li>
+          <ul className="p w-40 box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px border-[0.5px] border-base-300">
+            <li><a onClick={() => router.push("/requirements")}>Requirement analysis</a></li>
+            <li><a>Documentation</a></li>
+            <li><a>use case</a></li>
           </ul>
         </details>
       </li>
-      <li><a>Ideas</a></li>
+      <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
     </ul>
   </div>
   
@@ -80,3 +84,6 @@ const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
 }
 
 export default Navbar
+
+
+

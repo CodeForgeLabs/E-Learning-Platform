@@ -25,13 +25,42 @@ const config: Config = {
     
   ],
   daisyui: {
-    themes: ['dark' ,  'retro', 'cyberpunk', 'valentine', 'aqua' ,  {
+    themes: ["cupcake",
+      "bumblebee",
+      "emerald",
+      "corporate",
+      "synthwave",
+      "retro",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "garden",
+      "forest",
+      "aqua",
+      "lofi",
+      "pastel",
+      "fantasy",
+      "wireframe",
+      "black",
+      "luxury",
+      "dracula",
+      "cmyk",
+      "autumn",
+      "business",
+      "acid",
+      "lemonade",
+      "night",
+      "coffee",
+      "winter",
+      "dim",
+      "nord",
+      "sunset" ,  {
       myblacktheme: {  // Custom dark/black theme
         primary: "#000000",        // Primary color (blue)
-        secondary: "#6610f2",      // Secondary color (purple)
-        accent: "#d63384",         // Accent color (pinkish)
+        secondary: "#8A2BE2",      // Secondary color (purple)
+        accent: "#00FA9A",         // Accent color (pinkish)
 
-        neutral: "#111827",        // Dark neutral for backgrounds
+        neutral: "#1a1a1a",        // Dark neutral for backgrounds
         "base-100": "#000000",     // Dark base background color (black)
         "base-200": "#1a1a1a",     // Slightly lighter dark background
         "base-300": "#2d2d2d",     // Lighter gray for borders/cards
