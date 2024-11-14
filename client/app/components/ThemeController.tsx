@@ -52,7 +52,7 @@ const ThemeController = ({ setTheme }: { setTheme: (theme: string) => void }) =>
         name="theme-dropdown"
         className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
         aria-label="Default"
-        value="default" />
+        value="forest" />
     </li>
     <li>
       <input
@@ -77,8 +77,8 @@ const ThemeController = ({ setTheme }: { setTheme: (theme: string) => void }) =>
         type="radio"
         name="theme-dropdown"
         className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-        aria-label="Retro"
-        value="retro" />
+        aria-label="Lofi"
+        value="lofi" />
     </li>
     <li>
       <input

@@ -5,6 +5,7 @@ import { store } from './store'
 import { Provider } from 'react-redux'
 import Navbar from "./components/Navbar";
 import { useState } from "react";
+import Footer from "./components/Footer";
 
 
 export default function RootLayout({
@@ -19,9 +20,13 @@ export default function RootLayout({
          <html lang="en" data-theme = {theme}>
          
           
-      <body>
+      <body className="flex flex-col  min-h-screen">
+      <div className="flex flex-col  min-h-screen">
       <Navbar setTheme = {setTheme}/>
-        {children}
+            {children}
+          </div>
+      
+      <Footer/>
       </body>
     </html>
     </Provider>
