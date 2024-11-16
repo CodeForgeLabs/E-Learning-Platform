@@ -3,7 +3,7 @@ import React from 'react'
 import ThemeController from './ThemeController'
 import { useRouter } from 'next/navigation'
 
-const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
+const Navbar = () => {
   const router  = useRouter()
   return (<div className='flex-col   justify-center items-center'>
     <div className="flex justify-between border-b-[1px] border-base-300 navbar bg-base-100 ">
@@ -39,7 +39,7 @@ const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
         <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl" onClick={() => router.push("/")}>Peer to Peer</a>
+    <a className="btn btn-ghost text-xl " onClick={() => router.push("/")}>Peer to Peer</a>
   </div>
 
 
@@ -61,12 +61,12 @@ const Navbar = ({ setTheme }: { setTheme: (theme: string) => void }) => {
   </div>
   
 
-  <input placeholder='Search......' className='bg-base-200  h-8 pc:w-3/4 tablet:w-auto max-tablet:hidden outline-none border rounded-md p-1 '></input>
+  <input placeholder='Search......' className='bg-base-200   h-8 pc:w-3/4 tablet:w-[60%] max-tablet:hidden outline-none border rounded-md p-1 '></input>
   
 
   <div className="navbar-end w-1/4">
-    <a className="btn btn-ghost btn-sm ">Login</a>
-  <ThemeController setTheme = {setTheme} />
+    <a className="btn btn-ghost btn-sm " onClick={() => router.push("/login")}>Login</a>
+  <ThemeController  />
   </div>
 
 

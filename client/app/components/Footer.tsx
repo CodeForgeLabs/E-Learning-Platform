@@ -41,18 +41,18 @@ const Footer = () => {
                 <span className='w-auto flex items-center'>
 
              <p className='bg-gray-600 border-[0.5px] rounded-full w-7 h-7 ml-1'></p>
-             <a href="https://www.linkedin.com/in/natnael-assefa-/" className='text-secondary'>@Natnael Biruk</a>
+             <a href="https://www.linkedin.com/in/natnael-assefa-/" className='text-gray-500'>@Natnael Biruk</a>
                 </span>
 
                 <span className='w-auto flex items-center'>
 
 <p className='bg-gray-600 border-[0.5px] rounded-full w-7 h-7 ml-1'></p>
-<a href="https://www.linkedin.com/in/meheret-alemu-wolde/" className='text-secondary'>@Meheret Alemu</a>
+<a href="https://www.linkedin.com/in/meheret-alemu-wolde/" className='text-gray-500'>@Meheret Alemu</a>
    </span>
    <span className='w-auto flex items-center'>
 
 <p className='bg-gray-600 border-[0.5px] rounded-full w-7 h-7 ml-1'></p>
-<a href="https://www.linkedin.com/in/nathan-fisseha-397835302/" className='text-secondary'>@Nathan Fisseha</a>
+<a href="https://www.linkedin.com/in/nathan-fisseha-397835302/" className='text-gray-500'>@Nathan Fisseha</a>
    </span>
 
 
