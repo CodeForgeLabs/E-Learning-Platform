@@ -57,8 +57,10 @@ const config: Config = {
       "sunset" ,  {
       myblacktheme: {  // Custom dark/black theme
         primary: "#000000",        // Primary color (blue)
-        secondary: "#8A2BE2",      // Secondary color (purple)
+        secondary: "#6847f4",      // Secondary color (purple)
         accent: "#00FA9A",         // Accent color (pinkish)
+
+        // blac : "#000000",
 
         neutral: "#1a1a1a",        // Dark neutral for backgrounds
         "base-100": "#000000",     // Dark base background color (black)

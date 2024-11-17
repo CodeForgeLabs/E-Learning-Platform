@@ -97,15 +97,7 @@ const ThemeController = () => {
         value="lofi"
         onChange={handleThemeChange} />
     </li>
-    <li>
-      <input
-        type="radio"
-        name="theme-dropdown"
-        className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-        aria-label="Cyberpunk"
-        value="cyberpunk"
-        onChange={handleThemeChange} />
-    </li>
+    
     <li>
       <input
         type="radio"
@@ -122,6 +114,16 @@ const ThemeController = () => {
         className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
         aria-label="business"
         value="business" 
+        onChange={handleThemeChange}/>
+    </li>
+
+    <li>
+      <input
+        type="radio"
+        name="theme-dropdown"
+        className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+        aria-label="night"
+        value="night" 
         onChange={handleThemeChange}/>
     </li>
   </ul>

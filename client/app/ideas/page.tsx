@@ -1,6 +1,7 @@
 "use client"
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import Ideas from '../components/Ideas'
 
 const Page = () => {
   const router = useRouter()
@@ -13,6 +14,8 @@ const Page = () => {
         <button onClick = {() => router.push("/ideas/newidea")} className='btn '>Submit an idea</button>
         </div>
     </div>
+
+      <Ideas />
       
     </div>
   )

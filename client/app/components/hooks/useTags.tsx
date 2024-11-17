@@ -1,6 +1,6 @@
 
 
-import React, { useState } from "react";
+import  { useState } from "react";
 
 const useTagInput = (maxTags = 5) => {
   // Keep track of the tags array.
