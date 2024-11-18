@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 const LeaderBoard = () => {
   return (
@@ -31,7 +32,9 @@ const LeaderBoard = () => {
           <div className="flex items-center gap-3">
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s"
                   alt="Avatar Tailwind CSS Component" />
               </div>
@@ -58,7 +61,9 @@ const LeaderBoard = () => {
           <div className="flex items-center gap-3">
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
-                <img
+                <Image
+                width={100}
+                height={100}
                   src="https://img.daisyui.com/images/profile/demo/3@94.webp"
                   alt="Avatar Tailwind CSS Component" />
               </div>
@@ -83,7 +88,9 @@ const LeaderBoard = () => {
           <div className="flex items-center gap-3">
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
-                <img
+                <Image
+                width={100}
+                height={100}
                   src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
                   alt="Avatar Tailwind CSS Component" />
               </div>
@@ -109,7 +116,9 @@ const LeaderBoard = () => {
           <div className="flex items-center gap-3">
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
-                <img
+                <Image
+                width={100}
+                height={100}
                   src="https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0="
                   alt="Avatar Tailwind CSS Component" />
               </div>
