@@ -1,76 +1,94 @@
 package com.server.controllers;
 
-
 import com.server.models.User;
 import com.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-
-//marks the UserController as a REST api controller
-//mapping the base URL to the controller
-//all http requests are relative to /users
-//getusers -> localhost:8080/users/get-users
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    //test with a POST request to localhost:8080/users/create-user
-    //creates a User and saves in the database
-    //issues with lowercase and uppercase exist
-    //are LordMhri,lordmhri and LoRDMhri the same?
-    //also findByUsername needs to be extended to findByUsernameOrEmail
-    @PostMapping("/create-user")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        Optional<User> existingUser  = userService.findByUsername(user.getUsername());
-        if (existingUser.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        } else {
+    // Register a new user
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
             User savedUser = userService.saveUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+            return ResponseEntity.ok("User registered successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    //returns a ResponseEntity containing the user object
-    //after finding by the username if user exists else
-    @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        Optional<User> userOptional = userService.findByUsername(username);
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    // Login endpoint
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginData) {
+        String username = loginData.get("username");
+        String password = loginData.get("password");
+
+        Optional<User> optionalUser = userService.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+
+        User user = optionalUser.get();
+        if (!userService.checkPassword(password, user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+
+        return ResponseEntity.ok("Login successful!");
+    }
+
+    // Get user by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        return userService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Get all users (Admin use only)
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // Update username
+    @PatchMapping("/{id}/username")
+    public ResponseEntity<?> updateUsername(@PathVariable String id, @RequestParam String newUsername) {
+        return userService.updateUsername(id, newUsername)
+                .map(user -> ResponseEntity.ok("Username updated successfully!"))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Increment reputation
+    @PatchMapping("/{id}/reputation")
+    public ResponseEntity<?> incrementReputation(
+            @PathVariable String id,
+            @RequestParam int points) {
+        try {
+            userService.incrementReputation(id, points);
+            return ResponseEntity.ok("Reputation updated successfully!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-
-    //update User details coming soon ...
-
-    //assuming there is no problem with userId
-    //it exists and the app access this endpoint from within the dashboard
-    //aka the user exists
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable String userId) {
-        userService.deleteUserById(userId);
-        return ResponseEntity.ok().build();
+    // Delete user
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable String id) {
+        try {
+            userService.deleteUserById(id);
+            return ResponseEntity.ok("User deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-
-
-    //test with GET request to localhost:8080/list-all-users
-    //returns a ResponseEntity(entire HTTP response)
-    //with a list of User Objects
-    @GetMapping("/list-all-users")
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
 }
