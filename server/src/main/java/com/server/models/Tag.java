@@ -19,11 +19,13 @@ public class Tag {
 
     private String name;
 
-    private String description;
-
     @DBRef
     private Set<Question> questions = new HashSet<>(); // Many-to-many relationship with questions
 
     // No-arg constructor
     public Tag() {}
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

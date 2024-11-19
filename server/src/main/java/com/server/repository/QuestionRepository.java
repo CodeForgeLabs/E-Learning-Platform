@@ -5,13 +5,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends MongoRepository<Question, String> {
-    // Find a question by title
-    Optional<Question> findByTitle(String title);
 
-    // Find all questions by a specific tag name
-    List<Question> findByTags_Name(String tagName);
+    // Find all questions by a user's ID
+    List<Question> findByAuthor_Id(String userId);
+
+    // Find questions with a title containing a specific string (case-insensitive)
+    List<Question> findByTitleContainingIgnoreCase(String title);
+
+
 }
