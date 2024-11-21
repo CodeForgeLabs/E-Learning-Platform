@@ -3,11 +3,7 @@ package com.server.models;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,14 +13,12 @@ public class Tag {
     @Id
     private String id;
 
-    private String name;
-
-    @DBRef
-    private Set<Question> questions = new HashSet<>(); // Many-to-many relationship with questions
+    private String name; // Name of the tag
 
     // No-arg constructor
     public Tag() {}
 
+    // Constructor with parameters for easier instantiation
     public Tag(String name) {
         this.name = name;
     }

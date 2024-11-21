@@ -15,40 +15,50 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    // Endpoint to create a new answer
+    // Add an answer to a question
     @PostMapping
-    public ResponseEntity<Answer> createAnswer(@RequestBody Answer answer) {
-        Answer savedAnswer = answerService.saveAnswer(answer);
-        return ResponseEntity.ok(savedAnswer);
+    public ResponseEntity<Answer> addAnswer(@RequestBody Answer answer) {
+        Answer createdAnswer = answerService.addAnswer(answer);
+        return ResponseEntity.status(201).body(createdAnswer);
     }
 
-    // Endpoint to get all answers for a specific question
+    // Get all answers for a specific question
     @GetMapping("/question/{questionId}")
-    public ResponseEntity<List<Answer>> getAnswersByQuestionId(@PathVariable String questionId) {
+    public ResponseEntity<List<Answer>> getAnswersForQuestion(@PathVariable String questionId) {
         List<Answer> answers = answerService.getAnswersByQuestionId(questionId);
         return ResponseEntity.ok(answers);
     }
 
-    // Endpoint to get an answer by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Answer> getAnswerById(@PathVariable String id) {
-        Answer answer = answerService.getAnswerById(id);
-        if (answer != null) {
-            return ResponseEntity.ok(answer);
+    // Mark an answer as accepted
+    @PatchMapping("/{id}/accept")
+    public ResponseEntity<?> markAnswerAsAccepted(@PathVariable String id) {
+        try {
+            answerService.markAsAccepted(id);
+            return ResponseEntity.ok("Answer marked as accepted!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
-    // Endpoint to vote on an answer (upvote or downvote)
-    @PatchMapping("/{id}/vote")
-    public ResponseEntity<?> voteOnAnswer(
-            @PathVariable String id,
-            @RequestParam boolean isUpvote) {
+    // Upvote an answer
+    @PatchMapping("/{id}/upvote")
+    public ResponseEntity<?> upvoteAnswer(@PathVariable String id) {
         try {
-            answerService.voteOnAnswer(id, isUpvote);
-            return ResponseEntity.ok("Vote recorded successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error voting on answer.");
+            answerService.upvoteAnswer(id);
+            return ResponseEntity.ok("Answer upvoted successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Delete an answer
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAnswer(@PathVariable String id) {
+        try {
+            answerService.deleteAnswer(id);
+            return ResponseEntity.ok("Answer deleted successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

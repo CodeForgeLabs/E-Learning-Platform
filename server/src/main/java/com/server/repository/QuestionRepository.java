@@ -15,5 +15,9 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
     // Find questions with a title containing a specific string (case-insensitive)
     List<Question> findByTitleContainingIgnoreCase(String title);
 
+    // Find questions by a tag's ID (many-to-many relation)
+    List<Question> findByTags_Id(String tagId);
 
+    // Find questions by a tag's name (if needed)
+    List<Question> findByTags_Name(String tagName);
 }

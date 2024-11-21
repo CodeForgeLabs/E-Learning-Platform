@@ -5,6 +5,9 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+import java.util.Optional;
+
 
 @Getter
 @Setter
@@ -20,6 +23,9 @@ public class Question {
 
     @DBRef
     private User author; // Reference to the author (User object)
+
+    @DBRef
+    private List<Tag> tags; // Many-to-many relationship with tags
 
     // No-arg constructor
     public Question() {}

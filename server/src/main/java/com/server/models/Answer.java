@@ -3,9 +3,8 @@ package com.server.models;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,14 +14,18 @@ public class Answer {
     @Id
     private String id;
 
-    private String body;         // The content of the answer
-    private String questionId;   // The ID of the question this answer is related to
-    private String authorId;     // The ID of the user who wrote the answer
-    private int upvotes = 0;     // The number of upvotes this answer has
-    private int downvotes = 0;   // The number of downvotes this answer has
-    private String createdAt;    // The timestamp of when the answer was created
-    private String updatedAt;    // The timestamp of the last update to the answer
+    private String body; // The content of the answer
 
-    // No-arg constructor (optional if Lombok is used)
+    private int upvotes = 0; // To track the number of upvotes
+
+    private boolean accepted = false; // Indicates if this answer is accepted as the correct one
+
+    @DBRef
+    private Question question; // Reference to the associated question
+
+    @DBRef
+    private User author; // Reference to the user who answered
+
+    // No-arg constructor
     public Answer() {}
 }

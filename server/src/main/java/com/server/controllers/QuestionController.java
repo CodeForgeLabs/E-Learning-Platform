@@ -16,11 +16,11 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    // Create a new question
+    // Create a new question with optional tags
     @PostMapping
     public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
         Question createdQuestion = questionService.createQuestion(question);
-        return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
     // Get all questions
@@ -55,7 +55,27 @@ public class QuestionController {
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
-        // Update a question
+    // Get questions by tag ID
+    @GetMapping("/tag/{tagId}")
+    public ResponseEntity<List<Question>> getQuestionsByTagId(@PathVariable String tagId) {
+        List<Question> questions = questionService.getQuestionsByTagId(tagId);
+        if (questions.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(questions);
+    }
+
+    // Get questions by tag name
+    @GetMapping("/tag/name/{tagName}")
+    public ResponseEntity<List<Question>> getQuestionsByTagName(@PathVariable String tagName) {
+        List<Question> questions = questionService.getQuestionsByTagName(tagName);
+        if (questions.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(questions);
+    }
+
+    // Update a question
     @PutMapping("/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable String id, @RequestBody Question question) {
         Question updatedQuestion = questionService.updateQuestion(id, question);
