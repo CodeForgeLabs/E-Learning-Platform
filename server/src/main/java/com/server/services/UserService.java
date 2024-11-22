@@ -8,91 +8,86 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-
-//This class serves as a middle man between controller and
-//repository layers.
 @Service
 public class UserService {
 
-    // @Autowired is used for dependency injection in Spring.
-    // It automatically injects the required dependencies into this class.
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private  BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
-
+    // Register or save a new user
     public User saveUser(User user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // Check if email or username already exists
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already in use.");
+        }
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username already in use.");
+        }
+
+        // Encrypt password and assign default fields
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of("ROLE_USER")); // Default role
+        user.setReputation(0); // Default reputation
+
         return userRepository.save(user);
     }
 
-    //used to check if user exists in the database
-    //return an empty Optional if the user doesn't exist
-    public Optional<User> findById(String userId){
-        Optional<User> optionalUser = userRepository.findById(userId);
-        return optionalUser;
-    }
-
-    //returns an empty Optional if user doesn't exist
-    public Optional<User> findByUsername(String username){
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        return optionalUser;
-    }
-
-    //this checks if the pas
+    // Check if the provided raw password matches the hashed password
     public boolean checkPassword(String rawPassword, String hashedPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println("in checkPassword method");
-        if (passwordEncoder.matches(rawPassword, hashedPassword)){
-            System.out.println("Password matches");
-            return true;// match plain password with hashed password
-        } else {
-            System.out.println("Incorrect Password");
-            return false;
-        }
+        return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
-    //this looks for a user by the username and email
-    //if one of them exists in the database, then the user exists
+    // Find a user by ID
+    public Optional<User> findById(String userId) {
+        return userRepository.findById(userId);
+    }
+
+    // Find a user by username
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    // Find a user by username or email
     public Optional<User> findByUsernameOrEmail(String username, String email) {
         Optional<User> userByEmail = userRepository.findByEmail(email);
         if (userByEmail.isPresent()) {
             return userByEmail;
-        } else {
-            return userRepository.findByUsername(username);
         }
+        return userRepository.findByUsername(username);
     }
 
-    //deletes a user by identifying with the id
-    //only intended to be called from the userDashboard
-    //so no need for creating guard rails with the Optional class
-    public void deleteUserById(String userId){
-        userRepository.deleteById(userId);
-    }
-
-    public Optional<User> updateUsername(String userId,String newUsername){
+    // Update a user's username
+    public Optional<User> updateUsername(String userId, String newUsername) {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             User existingUser = user.get();
             existingUser.setUsername(newUsername);
             userRepository.save(existingUser);
             return Optional.of(existingUser);
         }
-        return  Optional.empty();
+        return Optional.empty();
     }
 
+    // Delete a user by ID
+    public void deleteUserById(String userId) {
+        userRepository.deleteById(userId);
+    }
 
-    //returns a list of users
-    //only meant for checking database purposes
-    //and for admin use only
-    //needs auth to be implemented for access to this
-    public List<User> getAllUsers(){
+    // Get all users (Admin use only)
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-
+    // Increment user reputation
+    public void incrementReputation(String userId, int points) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setReputation(user.getReputation() + points);
+        userRepository.save(user);
+    }
 }
