@@ -53,12 +53,15 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    // Get all users (Admin use only)
-    @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
+  
+    //test with GET request to localhost:8080/users/list-all-users
+    //returns a ResponseEntity(entire HTTP response)
+    //with a list of User Objects
+    @GetMapping("/list-all-users")
+    public ResponseEntity<List<User>> getAllUsers(){
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+   
 
     // Update username
     @PatchMapping("/{id}/username")
@@ -67,6 +70,7 @@ public class UserController {
                 .map(user -> ResponseEntity.ok("Username updated successfully!"))
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     // Increment reputation
     @PatchMapping("/{id}/reputation")
@@ -79,6 +83,7 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 
     // Delete user

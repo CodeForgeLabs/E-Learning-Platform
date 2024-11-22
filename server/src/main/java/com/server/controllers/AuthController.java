@@ -4,6 +4,8 @@ package com.server.controllers;
 import com.server.services.UserService;
 import com.server.utils.JwtUtil;
 import com.server.models.User;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    public ResponseEntity<String> loginUser(@RequestBody User user, HttpServletResponse response) {
 
         String username = user.getUsername();
         String password = user.getPassword();
@@ -50,6 +52,13 @@ public class AuthController {
         Optional<User> existingUser = userService.findByUsername(username);
         if (existingUser.isPresent() && userService.checkPassword(user.getPassword(), existingUser.get().getPassword())) {
             String token = jwtUtil.generateToken(existingUser.get().getUsername());
+            Cookie cookie = new Cookie("JWT_TOKEN",token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(24*60*60);
+            cookie.setSecure(true);
+            response.addCookie(cookie);
+            response.setStatus(HttpServletResponse.SC_OK);
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
