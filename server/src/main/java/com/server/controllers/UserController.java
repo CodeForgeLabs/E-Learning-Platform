@@ -64,7 +64,7 @@ public class UserController {
     }
 
 
-    //test with GET request to localhost:8080/list-all-users
+    //test with GET request to localhost:8080/users/list-all-users
     //returns a ResponseEntity(entire HTTP response)
     //with a list of User Objects
     @GetMapping("/list-all-users")

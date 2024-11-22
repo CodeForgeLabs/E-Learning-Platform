@@ -4,6 +4,7 @@ import com.server.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +44,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {;
             return header.split(" ")[1];
+        }
+
+        if (request.getCookies() != null){
+            for (Cookie cookie:request.getCookies()){
+                if ("JWT_TOKEN".equals(cookie.getName())){
+                    return cookie.getValue();
+                }
+            }
         }
         return null;
     }

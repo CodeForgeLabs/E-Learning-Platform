@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
+
 /*
     This is needed to access all endpoints without the default authorization
     which comes with SpringBoot.
