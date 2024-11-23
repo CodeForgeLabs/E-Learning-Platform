@@ -59,15 +59,17 @@ const ThemeController = () => {
     </svg>
   </div>
   <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
-    <li>
+  <li>
       <input
         type="radio"
         name="theme-dropdown"
         className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-        aria-label="dracula"
-        value="dracula"
-        onChange={handleThemeChange} />
+        aria-label="Light"
+        value="mywhitetheme" 
+        onChange={handleThemeChange}/>
     </li>
+
+    
     <li>
       <input
         type="radio"
@@ -78,15 +80,7 @@ const ThemeController = () => {
         onChange={handleThemeChange} />
     </li>
 
-    <li>
-      <input
-        type="radio"
-        name="theme-dropdown"
-        className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-        aria-label="Light"
-        value="mywhitetheme" 
-        onChange={handleThemeChange}/>
-    </li>
+    
 
     <li>
       <input

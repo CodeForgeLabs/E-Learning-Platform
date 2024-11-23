@@ -24,7 +24,7 @@ const Ideas = () => {
         tags: ["FOOTBALL", "MESSI", "SPORTS"],
       },]
   return (
-    <div className='flex flex-wrap justify-evenly pc:mx-20 tablet:px-8  max-tablet:px-4 mt-11 mb-8'>
+    <div className='flex flex-wrap justify-evenly pc:mx-20 tablet:px-4  max-tablet:px-4 mt-11 mb-8'>
         <div className='flex-col max-pc:w-full pc:w-2/3 '>
 
             <div className='flex justify-between mb-4'>

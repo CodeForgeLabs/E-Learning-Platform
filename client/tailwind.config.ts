@@ -16,7 +16,7 @@ const config: Config = {
       screens: {
         mobile: "0px",
         tablet: "580px",
-        pc : "1200px",   
+        pc : "1100px",   
       }
     },
   },

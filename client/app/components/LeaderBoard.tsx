@@ -5,7 +5,7 @@ const LeaderBoard = () => {
   return (
     
     
-    <div className='  flex flex-col my-10 pc:w-[30%] max-pc:w-full max-pc:px-5 h-fit'>
+    <div className='  flex flex-col my-10   h-fit'>
       
     <div className=' py-9 bg-secondary rounded-xl '>
         <h1 className='text-2xl text-center text-base-300'>Top Discussion Leaderboard</h1>

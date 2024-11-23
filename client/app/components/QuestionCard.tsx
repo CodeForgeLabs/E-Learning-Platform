@@ -1,6 +1,7 @@
+"use client"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-interface IdeaCardProps {
+interface Question {
     id : string;
     username: string;
     title: string;
@@ -11,7 +12,7 @@ interface IdeaCardProps {
     profileImage: string;
   }
   
-  const IdeaCard: React.FC<IdeaCardProps> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id }) => {
+  const IdeaCard: React.FC<Question> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id }) => {
     const router = useRouter();
   return (
     <div onClick = {() => router.push(`idea/${id}`)} className="flex max-tablet:flex-wrap border-t-[1px] border-gray-600 border-opacity-50  py-3 mt-5">
@@ -20,7 +21,7 @@ interface IdeaCardProps {
                   width="48"
                   height="48"
                   src= {profileImage}
-                  alt="Avatar Tailwind CSS Component" />
+                  alt="pfp" />
         <p className="text-secondary ml-2 tablet:hidden">{username} <span className="text-gray-400">&#183;  {speciality }</span> </p>
       </div>
       <div className="tablet:px-4 max-tablet:px-1 tablet:w-[85%] max-tablet:w-full">
