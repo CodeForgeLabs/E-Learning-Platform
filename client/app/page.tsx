@@ -6,10 +6,14 @@ import {setInitialLoading} from './features/loading/loadingSlice'
 import { RootState } from './store'
 import LeaderBoard from './components/LeaderBoard'
 import QuestionCard from './components/QuestionCard'
+import { useRouter } from 'next/navigation'
+import ShareQuestions from './components/ShareQuestions'
 
 
 const Homepage = () => {
   const [filter, setFilter] = React.useState('Most recent')
+  const [shareQuestion, setShareQuestion] = React.useState(true)
+  const router = useRouter()
 
     const Questions = [
         {
@@ -20,7 +24,7 @@ const Homepage = () => {
           description:
             "I am working on a web application that handles a lot of user data and faces frequent database interactions. What are the best practices for optimizing queries and improving database performance?",
           profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
-          tags: ["DATABASE", "PERFORMANCE", "OPTIMIZATION"],
+          tags: ["DATABASE", "PERFORMANCE", "OPTIMIZATION" , "MONGO" , "SQL"],
         },
         {
           id: "2",
@@ -89,10 +93,26 @@ const Homepage = () => {
         <div className='flex flex-wrap justify-between pc:mx-[3%] tablet:px-4  max-tablet:px-4 mt-11 mb-8'>
         <div className='flex-col max-pc:w-full pc:w-2/3 '>
 
-            <div className='flex justify-between mb-4'>
 
 
-            <p className=' pc:text-xl max-pc:text-lg'>690 Ideas</p>
+            <div className='mb-2'>
+
+            <div className='flex justify-between items-center'>
+              <p className='text-3xl'>Questions</p>
+              <button onClick = {() => router.push("/ideas/newidea")} className='btn btn-sm '>Ask Question</button>
+
+            </div>
+                      <p className='flex items-center text-xs pr-10 mt-2'> <span onClick={() => setShareQuestion(!shareQuestion)}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                      </svg>
+                      </span>Engage in threaded, public discussions on technical topics with Peer-to-Peer, your go-to platform for collaborative learning and knowledge sharing.</p>
+            < ShareQuestions shareQuestion = {shareQuestion} setShareQuestion = {setShareQuestion} />
+            </div>
+
+
+
+            <div className='flex items-end justify-between mb-4'>
+            <p className=' pc:text-lg max-pc:text-base'>{Questions.length} Questions</p>
             <div className="dropdown dropdown-end">
         <div tabIndex={0} role="button" className="btn btn-sm  m-1">{filter} <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -115,6 +135,7 @@ const Homepage = () => {
         </ul>
                 </div>
         </div>
+
 
         {Questions.map((idea , index) => (
             <QuestionCard
