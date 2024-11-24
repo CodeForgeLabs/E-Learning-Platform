@@ -44,7 +44,7 @@ const NewTopic = () => {
   onInput={(e) => {
     (e.target as HTMLTextAreaElement).style.height = "auto"; // Reset height to calculate new height
     (e.target as HTMLTextAreaElement).style.height = `${(e.target as HTMLTextAreaElement).scrollHeight}px`; // Set height based on content
-  }}className="textarea overflow-hidden border border-neutral  mt-4 " placeholder="Please provide as much detail as possible to ensure your ideas and questions are clearly communicated."></textarea>
+  }}className="textarea overflow-hidden border border-neutral  mt-4 min-h-36 " placeholder="Please provide as much detail as possible to ensure your ideas and questions are clearly communicated."></textarea>
         <p className='mt-4 font-medium'>Tags</p>
 
         <TagField
