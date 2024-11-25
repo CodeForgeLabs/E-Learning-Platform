@@ -28,12 +28,13 @@ const Navbar = () => {
       <ul
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li><a>Questions</a></li>
+        <li onClick={() => router.push("/")}><a>Questions</a></li>
         <li>
           <a>Get started</a>
           <ul className="p-2">
-            <li><a>Submenu 1</a></li>
-            <li><a>Submenu 2</a></li>
+          <li><a onClick={() => router.push("/requirements")}>Requirement analysis</a></li>
+            <li><a>Documentation</a></li>
+            <li><a>use case</a></li>
           </ul>
         </li>
         <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
