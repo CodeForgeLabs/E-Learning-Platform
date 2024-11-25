@@ -19,6 +19,9 @@ public class User {
 
     private String email;
 
+    //url link to the image
+    private String profilePicture;
+
     private String password;
 
     private int reputation = 0; // Default reputation when a user registers

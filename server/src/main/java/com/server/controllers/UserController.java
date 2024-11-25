@@ -17,34 +17,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Register a new user
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        try {
-            User savedUser = userService.saveUser(user);
-            return ResponseEntity.ok("User registered successfully!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    //Check with localhost:8080/api/users/{{id}}/profile-picture?url="link to image here"
+    @PatchMapping("/{id}/profile-picture")
+    public ResponseEntity<?> updateProfilePicture(@PathVariable String id, @RequestParam String url){
+        Optional<User> updateUser = userService.updateProfilePicture(id,url);
+        if (updateUser.isPresent()){
+            return ResponseEntity.ok("Profile Picture updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
         }
-    }
-
-    // Login endpoint
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginData) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
-
-        Optional<User> optionalUser = userService.findByUsername(username);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid username or password");
-        }
-
-        User user = optionalUser.get();
-        if (!userService.checkPassword(password, user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid username or password");
-        }
-
-        return ResponseEntity.ok("Login successful!");
     }
 
     // Get user by ID
