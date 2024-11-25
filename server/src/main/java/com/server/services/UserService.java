@@ -1,7 +1,7 @@
 package com.server.services;
 
 import com.server.models.User;
-import com.server.repository.UserRepository;
+import com.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,10 +31,23 @@ public class UserService {
 
         // Encrypt password and assign default fields
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setProfilePicture("https://imgur.com/hepj9ZS"); // this is a default userProfile for every user
         user.setRoles(Set.of("ROLE_USER")); // Default role
         user.setReputation(0); // Default reputation
 
         return userRepository.save(user);
+    }
+
+    //update profile picture of user
+    public Optional<User> updateProfilePicture(String userId,String profilepictureUrl){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()){
+            User existingUser = user.get();
+            existingUser.setProfilePicture(profilepictureUrl);
+            userRepository.save(existingUser);
+            return Optional.of(existingUser);
+        }
+        return Optional.empty();
     }
 
     // Check if the provided raw password matches the hashed password
