@@ -1,6 +1,7 @@
 "use client"
 import React from 'react'
 import Typingeffect from './Typingeffect'
+import Signup from './Signup'
 
 const Login = () => {
   return (
@@ -34,10 +35,17 @@ const Login = () => {
           <button className="btn btn-secondary">Login</button>
         </div>
 
-        <p>Don&#39;t have an account? <span className='text-secondary underline'>Sign up</span></p>
+        <p>Don&#39;t have an account? <span onClick={() => {
+          console.log("here")
+  const modal = document.getElementById('my_modal_3') as HTMLDialogElement;
+  if (modal) {
+    modal.showModal();
+  }
+}} className='text-secondary underline'>Sign up</span></p>
       </form>
     </div>
   </div>
+        <Signup />
 </div>
   )
 }
