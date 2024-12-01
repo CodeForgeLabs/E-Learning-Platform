@@ -5,9 +5,9 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.List;
-import java.util.Optional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,12 +21,25 @@ public class Question {
 
     private String body;
 
+    private int voteCount = 0;
+
     @DBRef
     private User author; // Reference to the author (User object)
 
-    @DBRef
-    private List<Tag> tags; // Many-to-many relationship with tags
+    private List<String> tags; // Tags as String values (e.g., ["Java", "Spring"])
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // No-arg constructor
     public Question() {}
+
+    // Method to increase vote count
+    public void upvote() {
+        this.voteCount++;
+    }
+
+    // Method to decrease vote count
+    public void downvote() {
+        this.voteCount--;
+    }
 }

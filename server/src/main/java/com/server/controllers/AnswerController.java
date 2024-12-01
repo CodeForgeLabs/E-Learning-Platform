@@ -2,11 +2,14 @@ package com.server.controllers;
 
 import com.server.models.Answer;
 import com.server.services.AnswerService;
+import com.server.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/answers")
@@ -15,50 +18,55 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    // Add an answer to a question
-    @PostMapping
-    public ResponseEntity<Answer> addAnswer(@RequestBody Answer answer) {
-        Answer createdAnswer = answerService.addAnswer(answer);
-        return ResponseEntity.status(201).body(createdAnswer);
-    }
+    @Autowired
+    private VoteService voteService;
 
     // Get all answers for a specific question
     @GetMapping("/question/{questionId}")
-    public ResponseEntity<List<Answer>> getAnswersForQuestion(@PathVariable String questionId) {
-        List<Answer> answers = answerService.getAnswersByQuestionId(questionId);
-        return ResponseEntity.ok(answers);
+    public ResponseEntity<List<Answer>> getAnswersByQuestionId(@PathVariable String questionId) {
+        return ResponseEntity.ok(answerService.getAnswersByQuestionId(questionId));
     }
 
-    // Mark an answer as accepted
-    @PatchMapping("/{id}/accept")
-    public ResponseEntity<?> markAnswerAsAccepted(@PathVariable String id) {
+    // Get a specific answer by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Answer> getAnswerById(@PathVariable String id) {
+        return answerService.getAnswerById(id)
+                .map(answer -> ResponseEntity.ok(answer))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    // Create a new answer for a question
+    @PostMapping
+    public ResponseEntity<Answer> createAnswer(@RequestBody Answer answer) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(answerService.createAnswer(answer));
+    }
+
+    // Update an existing answer
+    @PutMapping("/{id}")
+    public ResponseEntity<Answer> updateAnswer(@PathVariable String id, @RequestBody Answer answerDetails) {
         try {
-            answerService.markAsAccepted(id);
-            return ResponseEntity.ok("Answer marked as accepted!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok(answerService.updateAnswer(id, answerDetails));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    // Upvote an answer
-    @PatchMapping("/{id}/upvote")
-    public ResponseEntity<?> upvoteAnswer(@PathVariable String id) {
-        try {
-            answerService.upvoteAnswer(id);
-            return ResponseEntity.ok("Answer upvoted successfully!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    // Delete an answer
+    // Delete an answer by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAnswer(@PathVariable String id) {
-        try {
-            answerService.deleteAnswer(id);
-            return ResponseEntity.ok("Answer deleted successfully!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> deleteAnswer(@PathVariable String id) {
+        answerService.deleteAnswer(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Upvote or downvote an answer
+    @PostMapping("/{answerId}/vote")
+    public ResponseEntity<String> voteAnswer(@RequestParam String userId, @PathVariable String answerId, @RequestParam boolean isUpvote) {
+        return ResponseEntity.ok(voteService.voteAnswer(userId, answerId, isUpvote));
+    }
+
+    // Get all answers by a specific user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Answer>> getAnswersByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(answerService.getAnswersByUserId(userId));
     }
 }

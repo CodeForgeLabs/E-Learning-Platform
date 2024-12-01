@@ -1,14 +1,13 @@
 package com.server.services;
-import java.util.stream.Collectors;
-import java.util.Optional;
+
 import com.server.models.Question;
-import com.server.models.Tag;
 import com.server.repositories.QuestionRepository;
-import com.server.repositories.TagRepository;
+import com.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -17,43 +16,25 @@ public class QuestionService {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private TagRepository tagRepository;
+    private VoteService voteService;
 
-    // Add a new question with optional tags
+    @Autowired
+    private TagService tagService;  // Inject TagService
+
+    // Create a new question
     public Question createQuestion(Question question) {
-        List<Tag> tags = question.getTags();
-
-        if (tags != null && !tags.isEmpty()) {
-            for (Tag tag : tags) {
-                // Check if the tag already exists
-                Tag existingTag = tagRepository.findByName(tag.getName());
-                if (existingTag == null) {
-                    tagRepository.save(tag); // Save new tag if it doesn't exist
-                } else {
-                    tag = existingTag; // Use existing tag
-                }
-            }
+        // If the question contains tags, we will associate those tags with the question
+        if (question.getTags() != null && !question.getTags().isEmpty()) {
+            tagService.addTagsToQuestion(question.getTags());  // Add tags to the question (no need to pass questionId here)
         }
 
-        // Associate tags with the question
-        question.setTags(tags);
-
-        return questionRepository.save(question); // Save the question with its tags
-    }
-
-    // Find questions by tag ID
-    public List<Question> getQuestionsByTagId(String tagId) {
-        return questionRepository.findByTags_Id(tagId);
-    }
-
-    // Find questions by tag name
-    public List<Question> getQuestionsByTagName(String tagName) {
-        return questionRepository.findByTags_Name(tagName);
+        // Save the question after tag association
+        return questionRepository.save(question);
     }
 
     // Get all questions
     public List<Question> getAllQuestions() {
-        return questionRepository.findAll();
+        return questionRepository.findByOrderByCreatedAtDesc();
     }
 
     // Get a question by ID
@@ -61,18 +42,26 @@ public class QuestionService {
         return questionRepository.findById(id);
     }
 
+    // Update a question
+    public Question updateQuestion(String id, Question questionDetails) {
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+
+        question.setTitle(questionDetails.getTitle());
+        question.setBody(questionDetails.getBody());
+        question.setAuthor(questionDetails.getAuthor());
+
+        return questionRepository.save(question);
+    }
+
     // Delete a question by ID
     public void deleteQuestion(String id) {
         questionRepository.deleteById(id);
     }
 
-    // Update a question
-    public Question updateQuestion(String id, Question questionDetails) {
-        Question question = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
-        question.setTitle(questionDetails.getTitle());
-        question.setBody(questionDetails.getBody());
-        question.setAuthor(questionDetails.getAuthor());
-        return questionRepository.save(question);
+    // Upvote or downvote a question using VoteService
+    public String voteQuestion(String userId, String questionId, boolean isUpvote) {
+        return voteService.voteQuestion(userId, questionId, isUpvote);
     }
 
     // Get all questions by a specific user
@@ -85,13 +74,8 @@ public class QuestionService {
         return questionRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    // Find valid questions from the list of provided questions (based on question references)
-    public List<Question> findValidQuestions(List<Question> questions) {
-        List<String> questionIds = questions.stream()
-                .map(Question::getId)  // Get the IDs from the question objects
-                .collect(Collectors.toList());
-
-        // Retrieve all questions with these IDs from the database
-        return questionRepository.findAllById(questionIds);
+    // Find questions by a specific tag
+    public List<Question> getQuestionsByTag(String tagName) {
+        return questionRepository.findByTagsContaining(tagName);
     }
 }
