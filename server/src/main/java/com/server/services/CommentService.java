@@ -31,6 +31,11 @@ public class CommentService {
         return commentRepository.findByQuestion_Id(questionId);
     }
 
+    // Get all comments associated with a specific question by its ID ordered by creation date
+    public List<Comment> getCommentsByQuestionIdOrderedByCreatedAtDesc(String questionId) {
+        return commentRepository.findByQuestion_IdOrderByCreatedAtDesc(questionId);
+    }
+
     // Get all comments by a specific user
     public List<Comment> getCommentsByUserId(String userId) {
         return commentRepository.findByAuthor_Id(userId);

@@ -13,4 +13,7 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 
     // Find comments by a specific user's ID
     List<Comment> findByAuthor_Id(String userId); // Use underscores to match field names
+
+    // Find comments by the associated question's ID ordered by creation date
+    List<Comment> findByQuestion_IdOrderByCreatedAtDesc(String questionId);
 }

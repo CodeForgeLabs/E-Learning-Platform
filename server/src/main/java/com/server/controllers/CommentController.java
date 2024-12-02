@@ -22,6 +22,12 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsByQuestionId(questionId));
     }
 
+    // Get all comments for a specific question ordered by creation date
+    @GetMapping("/question/{questionId}/recent")
+    public ResponseEntity<List<Comment>> getCommentsByQuestionIdOrderedByCreatedAtDesc(@PathVariable String questionId) {
+        return ResponseEntity.ok(commentService.getCommentsByQuestionIdOrderedByCreatedAtDesc(questionId));
+    }
+
     // Get all comments by a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Comment>> getCommentsByUserId(@PathVariable String userId) {
