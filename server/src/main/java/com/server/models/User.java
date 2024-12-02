@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -25,6 +25,8 @@ public class User {
     private String password;
 
     private int reputation = 0; // Default reputation when a user registers
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private Set<String> roles; // E.g., ["ROLE_USER"], ["ROLE_ADMIN"]
 

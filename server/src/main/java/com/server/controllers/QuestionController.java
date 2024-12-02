@@ -2,6 +2,7 @@ package com.server.controllers;
 
 import com.server.models.Question;
 import com.server.services.QuestionService;
+import com.server.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,79 +14,73 @@ import java.util.List;
 @RequestMapping("/api/questions")
 public class QuestionController {
 
-    @Autowired
-    private QuestionService questionService;
+    private final QuestionService questionService;
+    private final VoteService voteService;
 
-    // Create a new question with optional tags
-    @PostMapping
-    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
-        Question createdQuestion = questionService.createQuestion(question);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+    @Autowired
+    public QuestionController(QuestionService questionService, VoteService voteService) {
+        this.questionService = questionService;
+        this.voteService = voteService;
     }
 
     // Get all questions
     @GetMapping
     public ResponseEntity<List<Question>> getAllQuestions() {
-        List<Question> questions = questionService.getAllQuestions();
-        return new ResponseEntity<>(questions, HttpStatus.OK);
+        return ResponseEntity.ok(questionService.getAllQuestions());
     }
 
-    // Get a question by ID
+    // Get a specific question by ID
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable String id) {
         return questionService.getQuestionById(id)
-                .map(ResponseEntity::ok)
+                .map(question -> ResponseEntity.ok(question))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // Get all questions by user
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Question>> getQuestionsByUser(@PathVariable String userId) {
-        List<Question> questions = questionService.getQuestionsByUserId(userId);
-        if (questions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return new ResponseEntity<>(questions, HttpStatus.OK);
-    }
-
-    // Find questions by title
-    @GetMapping("/title/{title}")
-    public ResponseEntity<List<Question>> getQuestionsByTitle(@PathVariable String title) {
-        List<Question> questions = questionService.getQuestionsByTitle(title);
-        return new ResponseEntity<>(questions, HttpStatus.OK);
-    }
-
-    // Get questions by tag ID
-    @GetMapping("/tag/{tagId}")
-    public ResponseEntity<List<Question>> getQuestionsByTagId(@PathVariable String tagId) {
-        List<Question> questions = questionService.getQuestionsByTagId(tagId);
-        if (questions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(questions);
-    }
-
-    // Get questions by tag name
-    @GetMapping("/tag/name/{tagName}")
-    public ResponseEntity<List<Question>> getQuestionsByTagName(@PathVariable String tagName) {
-        List<Question> questions = questionService.getQuestionsByTagName(tagName);
-        if (questions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(questions);
+    // Create a new question
+    @PostMapping
+    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(question));
     }
 
     // Update a question
     @PutMapping("/{id}")
-    public ResponseEntity<Question> updateQuestion(@PathVariable String id, @RequestBody Question question) {
-        Question updatedQuestion = questionService.updateQuestion(id, question);
-        return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
+    public ResponseEntity<Question> updateQuestion(@PathVariable String id, @RequestBody Question questionDetails) {
+        try {
+            return ResponseEntity.ok(questionService.updateQuestion(id, questionDetails));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     // Delete a question
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable String id) {
         questionService.deleteQuestion(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    // Upvote or downvote a question
+    @PostMapping("/{questionId}/vote")
+    public ResponseEntity<String> voteQuestion(@RequestParam String userId, @PathVariable String questionId, @RequestParam boolean isUpvote) {
+        return ResponseEntity.ok(voteService.voteQuestion(userId, questionId, isUpvote));
+    }
+
+    // Get all questions by a specific user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Question>> getQuestionsByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(questionService.getQuestionsByUserId(userId));
+    }
+
+    // Find questions by title (case-insensitive)
+    @GetMapping("/title/{title}")
+    public ResponseEntity<List<Question>> getQuestionsByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(questionService.getQuestionsByTitle(title));
+    }
+
+    // Find questions by a specific tag
+    @GetMapping("/tag/{tagName}")
+    public ResponseEntity<List<Question>> getQuestionsByTag(@PathVariable String tagName) {
+        return ResponseEntity.ok(questionService.getQuestionsByTag(tagName));
     }
 }

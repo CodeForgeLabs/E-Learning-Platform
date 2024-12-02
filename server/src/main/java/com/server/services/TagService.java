@@ -1,14 +1,11 @@
 package com.server.services;
 
 import com.server.models.Tag;
-import com.server.models.Question;
 import com.server.repositories.TagRepository;
-import com.server.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TagService {
@@ -16,45 +13,31 @@ public class TagService {
     @Autowired
     private TagRepository tagRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    // Add an existing tag to an existing question based on questionId
-    public Tag addTagToQuestion(String questionId, Tag tag) {
-        // First, check if the tag exists in the repository, else save the new tag
-        Tag existingTag = tagRepository.findByName(tag.getName());
-        if (existingTag == null) {
-            existingTag = tagRepository.save(tag);  // If the tag does not exist, save it
-        }
-
-        // Find the question by its ID
-        Optional<Question> questionOptional = questionRepository.findById(questionId);
-        if (questionOptional.isPresent()) {
-            Question question = questionOptional.get();
-
-            // Check if the tag is already associated with the question to avoid duplicates
-            if (!question.getTags().contains(existingTag)) {
-                question.getTags().add(existingTag);  // Add the tag to the question
-                questionRepository.save(question);  // Save the updated question
-            }
-
-            return existingTag;
-        } else {
-            throw new IllegalArgumentException("Question not found with ID: " + questionId);
-        }
-    }
-
     // Find a tag by its name
-    public Tag findTagByName(String name) {
+    public Tag getTagByName(String name) {
         return tagRepository.findByName(name);
     }
 
-    // Find questions by tag name
-    public List<Question> findQuestionsByTagName(String tagName) {
-        Tag tag = tagRepository.findByName(tagName);
-        if (tag == null) {
-            throw new IllegalArgumentException("Tag not found");
+    // Get all tags with a popularity count greater than a specified value
+    public List<Tag> getTagsByPopularity(int popularityCount) {
+        return tagRepository.findByPopularityCountGreaterThan(popularityCount);
+    }
+
+    // Add tags to the question
+    public void addTagsToQuestion(List<String> tagNames) {
+        for (String tagName : tagNames) {
+            // Find existing tag or create a new one
+            Tag tag = tagRepository.findByName(tagName);
+            if (tag == null) {
+                tag = new Tag();
+                tag.setName(tagName);
+                tag.setPopularityCount(0); // Initialize popularity count
+                tagRepository.save(tag); // Save the new tag
+            }
+
+            // Increment popularity count and save the tag
+            tag.setPopularityCount(tag.getPopularityCount() + 1);
+            tagRepository.save(tag);
         }
-        return questionRepository.findByTags_Id(tag.getId());
     }
 }

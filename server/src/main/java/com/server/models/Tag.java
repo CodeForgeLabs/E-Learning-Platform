@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Document(collection = "tags")
@@ -15,11 +17,7 @@ public class Tag {
 
     private String name; // Name of the tag
 
-    // No-arg constructor
-    public Tag() {}
+    private int popularityCount = 0; // Tracks the number of times this tag has been used in questions
 
-    // Constructor with parameters for easier instantiation
-    public Tag(String name) {
-        this.name = name;
-    }
+    private LocalDateTime createdAt = LocalDateTime.now(); // Timestamp for when the tag was created or last updated
 }
