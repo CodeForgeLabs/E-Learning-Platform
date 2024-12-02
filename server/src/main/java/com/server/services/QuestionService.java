@@ -51,6 +51,12 @@ public class QuestionService {
         question.setBody(questionDetails.getBody());
         question.setAuthor(questionDetails.getAuthor());
 
+        // Update tags
+        if (questionDetails.getTags() != null && !questionDetails.getTags().isEmpty()) {
+            tagService.addTagsToQuestion(questionDetails.getTags());
+            question.setTags(questionDetails.getTags());
+        }
+
         return questionRepository.save(question);
     }
 
@@ -74,8 +80,8 @@ public class QuestionService {
         return questionRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    // Find questions by a specific tag
+    // Find questions by a specific tag (case-insensitive)
     public List<Question> getQuestionsByTag(String tagName) {
-        return questionRepository.findByTagsContaining(tagName);
+        return questionRepository.findByTagsIgnoreCaseContaining(tagName);
     }
 }

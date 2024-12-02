@@ -62,4 +62,12 @@ public class AnswerService {
     public List<Answer> getAnswersByUserId(String userId) {
         return answerRepository.findByAuthor_Id(userId); // Find answers by the author (user) ID
     }
+   // Accept an answer by its ID
+    public Answer acceptAnswer(String id) {
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Answer not found"));
+
+        answer.setAccepted(true);
+        return answerRepository.save(answer);
+    }
 }

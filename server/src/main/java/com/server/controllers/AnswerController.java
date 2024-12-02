@@ -69,4 +69,13 @@ public class AnswerController {
     public ResponseEntity<List<Answer>> getAnswersByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(answerService.getAnswersByUserId(userId));
     }
+   // Accept an answer by its ID
+    @PatchMapping("/{id}/accept")
+    public ResponseEntity<Answer> acceptAnswer(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(answerService.acceptAnswer(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

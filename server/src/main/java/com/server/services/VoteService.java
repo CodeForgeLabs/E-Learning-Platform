@@ -49,6 +49,15 @@ public class VoteService {
                     existingVote.setUpvote(isUpvote);
                     existingVote.applyVote();
                     voteRepository.save(existingVote);
+
+                    // Update the vote count
+                    if (isUpvote) {
+                        question.upvote();
+                    } else {
+                        question.downvote();
+                    }
+                    questionRepository.save(question);
+
                     return "Vote updated successfully";
                 }
             }
@@ -59,8 +68,15 @@ public class VoteService {
         vote.setVoter(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
         vote.setQuestion(question);
         vote.setUpvote(isUpvote);
-        vote.applyVote();
         voteRepository.save(vote);
+
+        // Update the vote count
+        if (isUpvote) {
+            question.upvote();
+        } else {
+            question.downvote();
+        }
+        questionRepository.save(question);
 
         return "Vote applied successfully";
     }
@@ -86,6 +102,15 @@ public class VoteService {
                     existingVote.setUpvote(isUpvote);
                     existingVote.applyVote();
                     voteRepository.save(existingVote);
+
+                    // Update the vote count
+                    if (isUpvote) {
+                        answer.upvote();
+                    } else {
+                        answer.downvote();
+                    }
+                    answerRepository.save(answer);
+
                     return "Vote updated successfully";
                 }
             }
@@ -96,8 +121,15 @@ public class VoteService {
         vote.setVoter(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
         vote.setAnswer(answer);
         vote.setUpvote(isUpvote);
-        vote.applyVote();
         voteRepository.save(vote);
+
+        // Update the vote count
+        if (isUpvote) {
+            answer.upvote();
+        } else {
+            answer.downvote();
+        }
+        answerRepository.save(answer);
 
         return "Vote applied successfully";
     }

@@ -22,4 +22,6 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
 
     // Find questions sorted by creation date (most recent first)
     List<Question> findByOrderByCreatedAtDesc();
+
+    List<Question> findByTagsIgnoreCaseContaining(String tagName);
 }

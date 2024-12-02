@@ -33,13 +33,6 @@ public class TagController {
         return tag != null ? ResponseEntity.ok(tag) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    // Add tags to a question and create them if they don't exist
-    @PostMapping("/add")
-    public ResponseEntity<Void> addTagsToQuestion(@RequestParam List<String> tagNames, @RequestParam String questionId) {
-        tagService.addTagsToQuestion(tagNames);  // Corrected to pass only tag names
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     // Get tags by popularity
     @GetMapping("/popular/{popularityCount}")
     public ResponseEntity<List<Tag>> getTagsByPopularity(@PathVariable int popularityCount) {
