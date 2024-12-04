@@ -21,13 +21,7 @@ public class UserService {
 
     // Register or save a new user
     public User saveUser(User user) {
-        // Check if email or username already exists
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already in use.");
-        }
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("Username already in use.");
-        }
+
 
         // Encrypt password and assign default fields
         user.setPassword(passwordEncoder.encode(user.getPassword()));

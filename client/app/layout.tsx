@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Head from 'next/head';
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
 
 export default function RootLayout({
@@ -28,6 +29,8 @@ export default function RootLayout({
   }, []);
   
   return (
+    <SessionProvider>
+      
     <Provider store={store}>
       
          <html lang="en" data-theme = "mywhitetheme" >
@@ -49,6 +52,7 @@ export default function RootLayout({
       </body>
     </html>
     </Provider>
+    </SessionProvider>
    
   );
 }
