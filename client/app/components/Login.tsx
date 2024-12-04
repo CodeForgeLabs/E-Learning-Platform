@@ -2,8 +2,21 @@
 import React from 'react'
 import Typingeffect from './Typingeffect'
 import Signup from './Signup'
+import { signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
 const Login = () => {
+  const session = useSession()
+  const handleLogin = async () => { 
+    const res = await signIn('credentials', {
+      redirect: false,
+      username: 'test',
+      password: 'tes',
+    })
+    console.log(res)
+    console.log(session)
+    
+  }
   return (
     <div className="hero bg-base-200 min-h-screen">
   <div className="hero-content flex-col lg:flex-row-reverse">
@@ -32,7 +45,7 @@ const Login = () => {
           </label>
         </div>
         <div className="form-control mt-6">
-          <button className="btn btn-secondary">Login</button>
+          <button onClick = {handleLogin} className="btn btn-secondary">Login</button>
         </div>
 
         <p>Don&#39;t have an account? <span onClick={() => {

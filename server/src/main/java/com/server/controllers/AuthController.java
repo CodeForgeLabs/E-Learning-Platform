@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -30,10 +32,12 @@ public class AuthController {
     //handle the issue with lowercasing and uppercasing
     //are Meheret,MEHeret,meheret the same?
     @PostMapping("/register")
-    public ResponseEntity<User> registerNewUser(@RequestBody User user){
-        Optional<User> existingUser  = userService.findByUsernameOrEmail(user.getUsername(),user.getEmail());
+    public ResponseEntity<?> registerNewUser(@RequestBody User user){
+        Optional<User> existingUser  = userService.findByUsername(user.getUsername());
         if (existingUser.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Username is already taken.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         } else {
             User savedUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
@@ -41,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<?> loginUser(@RequestBody User user, HttpServletResponse response) {
 
         String username = user.getUsername();
         String password = user.getPassword();
@@ -59,9 +63,19 @@ public class AuthController {
             cookie.setSecure(true);
             response.addCookie(cookie);
             response.setStatus(HttpServletResponse.SC_OK);
-            return ResponseEntity.ok(token);
+            Map<String, Object> filteredUser = Map.of(
+                    "id", existingUser.get().getId(),
+                    "username", existingUser.get().getUsername(),
+                    "profilePicture", existingUser.get().getProfilePicture(),
+                    "reputation", existingUser.get().getReputation(),
+                    "roles", existingUser.get().getRoles()
+            );
+            System.out.println("ok 200");
+            return ResponseEntity.ok(filteredUser);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid username or password.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 
