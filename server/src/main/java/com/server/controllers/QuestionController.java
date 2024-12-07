@@ -1,26 +1,53 @@
 package com.server.controllers;
 
 import com.server.models.Question;
+import com.server.models.User;
 import com.server.services.QuestionService;
+import com.server.services.UserService;
 import com.server.services.VoteService;
+import com.server.services.AuthService;
+import com.server.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
 
+
     private final QuestionService questionService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
     private final VoteService voteService;
+    private final AuthService authService;
 
     @Autowired
-    public QuestionController(QuestionService questionService, VoteService voteService) {
+    public QuestionController(QuestionService questionService, UserService userService, JwtUtil jwtUtil, VoteService voteService, AuthService authService) {
         this.questionService = questionService;
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
         this.voteService = voteService;
+        this.authService = authService;
+    }
+
+
+
+    // Create a new question with the current authenticated user
+    @PostMapping("/create-with-auth-user")
+    public ResponseEntity<Question> createQuestionWithAuthUser(@RequestBody Question question, HttpServletRequest request) {
+        String username = authService.getCurrentUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        question.setAuthor(user.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(question));
     }
 
     // Get all questions
