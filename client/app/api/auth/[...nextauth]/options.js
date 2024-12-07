@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 
 
+
 export const options = {
   // Configure one or more authentication providers
   providers : [
@@ -44,6 +45,11 @@ export const options = {
         },
       }),
   ],
+
+  pages : {
+    error: "/login", // Optional: Redirect to custom error page
+  },
+  
    
   callbacks : {
     //called whenever we check session fro the frontend
@@ -63,6 +69,10 @@ export const options = {
       }
         return token;
       },
+      pages: {
+        error: "/auth/errorwefw", // Optional: Redirect to custom error page
+      },
+      
   }
 
 }

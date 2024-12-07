@@ -27,6 +27,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println("Inside JwtAuthFilter - doFilterInternal");
         String token = extractToken(request);
         System.out.println("Extracted Token: " + token);
+        String requestURI = request.getRequestURI();
+
+
+
+        if ("/auth/login".equals(requestURI) || "/auth/register".equals(requestURI) ){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
 
         if (token != null && jwtUtil.isTokenValid(token, extractUsername(token))) {
             Claims claims = jwtUtil.extractClaims(token);
