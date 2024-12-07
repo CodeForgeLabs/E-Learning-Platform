@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'gradient-to-r': 'linear-gradient(to right, #ffffff, #d1c4e9)',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
