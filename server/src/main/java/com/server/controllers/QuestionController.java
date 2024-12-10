@@ -36,10 +36,8 @@ public class QuestionController {
         this.authService = authService;
     }
 
-
-
-    // Create a new question with the current authenticated user
-    @PostMapping("/create-with-auth-user")
+    // Create a new question
+    @PostMapping
     public ResponseEntity<Question> createQuestionWithAuthUser(@RequestBody Question question, HttpServletRequest request) {
         String username = authService.getCurrentUsername();
         Optional<User> user = userService.findByUsername(username);
@@ -64,11 +62,6 @@ public class QuestionController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // Create a new question
-    @PostMapping
-    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(question));
-    }
 
     // Update a question
     @PutMapping("/{id}")
@@ -89,8 +82,13 @@ public class QuestionController {
 
     // Upvote or downvote a question
     @PostMapping("/{questionId}/vote")
-    public ResponseEntity<String> voteQuestion(@RequestParam String userId, @PathVariable String questionId, @RequestParam boolean isUpvote) {
-        return ResponseEntity.ok(voteService.voteQuestion(userId, questionId, isUpvote));
+    public ResponseEntity<String> voteQuestion(@PathVariable String questionId, @RequestParam boolean isUpvote) {
+        String username = authService.getCurrentUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(voteService.voteQuestion(user.get().getId(), questionId, isUpvote));
     }
 
     // Get all questions by a specific user
