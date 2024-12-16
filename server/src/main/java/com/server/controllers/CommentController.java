@@ -41,7 +41,12 @@ public class CommentController {
     // Get all comments by a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Comment>> getCommentsByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(commentService.getCommentsByUserId(userId));
+        String username = authService.getCurrentUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if(user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(commentService.getCommentsByUserId(user.get().getId()));
     }
 
     // Get a specific comment by ID

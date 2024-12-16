@@ -54,6 +54,12 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllQuestions());
     }
 
+    //Get all question ordered by Upvotes
+    @GetMapping("/most-upvotes")
+    public ResponseEntity<List<Question>> getAllQuestionOrderedbyVoteCount(){
+        return ResponseEntity.ok(questionService.getAllQuestionsOrderedByVoteCount());
+    }
+
     // Get a specific question by ID
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable String id) {
@@ -92,9 +98,14 @@ public class QuestionController {
     }
 
     // Get all questions by a specific user
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Question>> getQuestionsByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(questionService.getQuestionsByUserId(userId));
+    @GetMapping("/user/current-auth-user")
+    public ResponseEntity<List<Question>> getQuestionsByUserId() {
+        String username = authService.getCurrentUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(questionService.getQuestionsByUserId(user.get().getId()));
     }
 
     // Find questions by title (case-insensitive)
