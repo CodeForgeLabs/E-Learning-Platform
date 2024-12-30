@@ -64,6 +64,10 @@ public class CommentController {
         if(user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        User currentUser = user.get();
+        currentUser.setReputation(currentUser.getReputation()+3);
+        userService.saveExistingUser(currentUser);
+
         comment.setAuthor(user.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(comment));
     }
