@@ -40,4 +40,21 @@ public class TagService {
             tagRepository.save(tag);
         }
     }
+
+    public void addTagsToIdea(List<String> tagNames) {
+        for (String tagName : tagNames) {
+            // Find existing tag or create a new one
+            Tag tag = tagRepository.findByName(tagName);
+            if (tag == null) {
+                tag = new Tag();
+                tag.setName(tagName);
+                tag.setPopularityCount(0); // Initialize popularity count
+                tagRepository.save(tag); // Save the new tag
+            }
+
+            // Increment popularity count and save the tag
+            tag.setPopularityCount(tag.getPopularityCount() + 1);
+            tagRepository.save(tag);
+        }
+    }
 }

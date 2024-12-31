@@ -1,10 +1,12 @@
 package com.server.services;
 
 import com.server.models.Answer;
+import com.server.models.Idea;
 import com.server.models.Question;
 import com.server.models.User;
 import com.server.models.Vote;
 import com.server.repositories.AnswerRepository;
+import com.server.repositories.IdeaRepository;
 import com.server.repositories.QuestionRepository;
 import com.server.repositories.UserRepository;
 import com.server.repositories.VoteRepository;
@@ -28,6 +30,9 @@ public class VoteService {
 
     @Autowired
     private AnswerRepository answerRepository;
+
+    @Autowired
+    private IdeaRepository ideaRepository;
 
     @Autowired
     private UserService userService;
@@ -90,6 +95,67 @@ public class VoteService {
         }
         questionRepository.save(question);
         userService.saveExistingUser(questionAuthor);
+
+        return "Vote applied successfully";
+    }
+
+    // Upvote or downvote an idea
+    public String voteIdea(String userId, String ideaId, boolean isUpvote) {
+        Optional<Idea> optionalIdea = ideaRepository.findById(ideaId);
+        if (!optionalIdea.isPresent()) {
+            return "Idea not found";
+        }
+
+        Idea idea = optionalIdea.get();
+        String ideaAuthorId = idea.getAuthor().getId();
+        Optional<User> ideaAuthorOpt = userService.findById(ideaAuthorId);
+        if (ideaAuthorOpt.isEmpty()) {
+            return "Idea author not found";
+        }
+
+        User ideaAuthor = ideaAuthorOpt.get();
+
+        List<Vote> existingVotes = voteRepository.findByIdea_Id(ideaId);
+        for (Vote existingVote : existingVotes) {
+            if (existingVote.getVoter().getId().equals(userId)) {
+                if (existingVote.isUpvote() == isUpvote) {
+                    return "You have already voted this way";
+                } else {
+                    existingVote.setUpvote(isUpvote);
+                    existingVote.applyVote();
+                    voteRepository.save(existingVote);
+
+                    if (isUpvote) {
+                        idea.upvote();
+                        ideaAuthor.setReputation(ideaAuthor.getReputation() + 1);
+                    } else {
+                        idea.downvote();
+                        ideaAuthor.setReputation(ideaAuthor.getReputation() - 1);
+                    }
+                    ideaRepository.save(idea);
+                    userService.saveExistingUser(ideaAuthor);
+
+                    return "Vote updated successfully";
+                }
+            }
+        }
+
+        // If no previous vote found, create a new vote
+        Vote vote = new Vote();
+        vote.setVoter(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+        vote.setIdea(idea);
+        vote.setUpvote(isUpvote);
+        voteRepository.save(vote);
+
+        if (isUpvote) {
+            idea.upvote();
+            ideaAuthor.setReputation(ideaAuthor.getReputation() + 1);
+        } else {
+            idea.downvote();
+            ideaAuthor.setReputation(ideaAuthor.getReputation() - 1);
+        }
+        ideaRepository.save(idea);
+        userService.saveExistingUser(ideaAuthor);
 
         return "Vote applied successfully";
     }
@@ -160,6 +226,11 @@ public class VoteService {
         return voteRepository.findByQuestion_Id(questionId);
     }
 
+     // Get all votes for a specific idea
+    public List<Vote> getVotesForIdea(String ideaId) {
+        return voteRepository.findByIdea_Id(ideaId);
+    }
+
     // Get all votes for a specific answer
     public List<Vote> getVotesForAnswer(String answerId) {
         return voteRepository.findByAnswer_Id(answerId);
@@ -168,6 +239,12 @@ public class VoteService {
     // Get a user's vote on a specific question
     public Optional<Vote> getUserVoteOnQuestion(String userId, String questionId) {
         List<Vote> votes = voteRepository.findByQuestion_Id(questionId);
+        return votes.stream().filter(vote -> vote.getVoter().getId().equals(userId)).findFirst();
+    }
+
+      // Get a user's vote on a specific idea
+    public Optional<Vote> getUserVoteOnIdea(String userId, String ideaId) {
+        List<Vote> votes = voteRepository.findByIdea_Id(ideaId);
         return votes.stream().filter(vote -> vote.getVoter().getId().equals(userId)).findFirst();
     }
 
