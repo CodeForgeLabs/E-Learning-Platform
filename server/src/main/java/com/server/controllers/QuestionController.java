@@ -44,6 +44,11 @@ public class QuestionController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        //Increment reputation based on custom value (in this case 5)
+        User currentUser = user.get();
+        currentUser.setReputation(currentUser.getReputation() + 15);
+        userService.saveExistingUser(currentUser);
+
         question.setAuthor(user.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(question));
     }
@@ -94,6 +99,10 @@ public class QuestionController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+
+
+
         return ResponseEntity.ok(voteService.voteQuestion(user.get().getId(), questionId, isUpvote));
     }
 

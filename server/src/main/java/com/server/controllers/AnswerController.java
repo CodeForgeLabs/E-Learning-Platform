@@ -30,7 +30,6 @@ public class AnswerController {
     @Autowired
     private UserService userService;
 
-
     // Get all answers for a specific question
     @GetMapping("/question/{questionId}")
     public ResponseEntity<List<Answer>> getAnswersByQuestionId(@PathVariable String questionId) {
@@ -53,6 +52,10 @@ public class AnswerController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        User currentUser = user.get();
+        currentUser.setReputation(currentUser.getReputation() + 5);
+        userService.saveExistingUser(currentUser);
+
         answer.setAuthor(user.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(answerService.createAnswer(answer));
     }
@@ -76,7 +79,7 @@ public class AnswerController {
 
     // Upvote or downvote an answer
     @PostMapping("/{answerId}/vote")
-    public ResponseEntity<String> voteAnswer(@RequestParam String userId, @PathVariable String answerId, @RequestParam boolean isUpvote) {
+    public ResponseEntity<String> voteAnswer(@PathVariable String answerId, @RequestParam boolean isUpvote) {
         String username = authService.getCurrentUsername();
         Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
@@ -90,9 +93,23 @@ public class AnswerController {
     public ResponseEntity<List<Answer>> getAnswersByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(answerService.getAnswersByUserId(userId));
     }
-   // Accept an answer by its ID
+
+    // Accept an answer by its ID
     @PatchMapping("/{id}/accept")
     public ResponseEntity<Answer> acceptAnswer(@PathVariable String id) {
+        Optional<Answer> answer = answerService.getAnswerById(id);
+        if (answer.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        Answer answerObj = answer.get();
+        String writerId = answerObj.getAuthor().getId();
+        Optional<User> answerAuthor = userService.findById(writerId);
+        if (answerAuthor.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        User answerAuthorObj = answerAuthor.get();
+        answerAuthorObj.setReputation(answerAuthorObj.getReputation() + 20);
+        userService.saveExistingUser(answerAuthorObj);
         try {
             return ResponseEntity.ok(answerService.acceptAnswer(id));
         } catch (RuntimeException e) {

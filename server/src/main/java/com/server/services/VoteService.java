@@ -2,11 +2,12 @@ package com.server.services;
 
 import com.server.models.Answer;
 import com.server.models.Question;
+import com.server.models.User;
 import com.server.models.Vote;
 import com.server.repositories.AnswerRepository;
 import com.server.repositories.QuestionRepository;
-import com.server.repositories.VoteRepository;
 import com.server.repositories.UserRepository;
+import com.server.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,9 @@ public class VoteService {
     @Autowired
     private AnswerRepository answerRepository;
 
+    @Autowired
+    private UserService userService;
+
     // Upvote or downvote a question
     public String voteQuestion(String userId, String questionId, boolean isUpvote) {
         Optional<Question> optionalQuestion = questionRepository.findById(questionId);
@@ -36,27 +40,33 @@ public class VoteService {
         }
 
         Question question = optionalQuestion.get();
+        String questionAuthorId = question.getAuthor().getId();
+        Optional<User> questionAuthorOpt = userService.findById(questionAuthorId);
+        if (questionAuthorOpt.isEmpty()) {
+            return "Question author not found";
+        }
 
-        // Check if the user has already voted on this question
+        User questionAuthor = questionAuthorOpt.get();
+
         List<Vote> existingVotes = voteRepository.findByQuestion_Id(questionId);
         for (Vote existingVote : existingVotes) {
             if (existingVote.getVoter().getId().equals(userId)) {
-                // If the user already voted, check if they are changing their vote
                 if (existingVote.isUpvote() == isUpvote) {
                     return "You have already voted this way";
                 } else {
-                    // If they want to change their vote, update the vote
                     existingVote.setUpvote(isUpvote);
                     existingVote.applyVote();
                     voteRepository.save(existingVote);
 
-                    // Update the vote count
                     if (isUpvote) {
                         question.upvote();
+                        questionAuthor.setReputation(questionAuthor.getReputation() + 1);
                     } else {
                         question.downvote();
+                        questionAuthor.setReputation(questionAuthor.getReputation() - 1);
                     }
                     questionRepository.save(question);
+                    userService.saveExistingUser(questionAuthor);
 
                     return "Vote updated successfully";
                 }
@@ -70,13 +80,16 @@ public class VoteService {
         vote.setUpvote(isUpvote);
         voteRepository.save(vote);
 
-        // Update the vote count
+        // Update the vote count and reputation
         if (isUpvote) {
             question.upvote();
+            questionAuthor.setReputation(questionAuthor.getReputation() + 1);
         } else {
             question.downvote();
+            questionAuthor.setReputation(questionAuthor.getReputation() - 1);
         }
         questionRepository.save(question);
+        userService.saveExistingUser(questionAuthor);
 
         return "Vote applied successfully";
     }
@@ -89,27 +102,33 @@ public class VoteService {
         }
 
         Answer answer = optionalAnswer.get();
+        String answerAuthorId = answer.getAuthor().getId();
+        Optional<User> answerAuthorOpt = userService.findById(answerAuthorId);
+        if (answerAuthorOpt.isEmpty()) {
+            return "Answer author not found";
+        }
 
-        // Check if the user has already voted on this answer
+        User answerAuthor = answerAuthorOpt.get();
+
         List<Vote> existingVotes = voteRepository.findByAnswer_Id(answerId);
         for (Vote existingVote : existingVotes) {
             if (existingVote.getVoter().getId().equals(userId)) {
-                // If the user already voted, check if they are changing their vote
                 if (existingVote.isUpvote() == isUpvote) {
                     return "You have already voted this way";
                 } else {
-                    // If they want to change their vote, update the vote
                     existingVote.setUpvote(isUpvote);
                     existingVote.applyVote();
                     voteRepository.save(existingVote);
 
-                    // Update the vote count
                     if (isUpvote) {
                         answer.upvote();
+                        answerAuthor.setReputation(answerAuthor.getReputation() + 1);
                     } else {
                         answer.downvote();
+                        answerAuthor.setReputation(answerAuthor.getReputation() - 1);
                     }
                     answerRepository.save(answer);
+                    userService.saveExistingUser(answerAuthor);
 
                     return "Vote updated successfully";
                 }
@@ -123,13 +142,15 @@ public class VoteService {
         vote.setUpvote(isUpvote);
         voteRepository.save(vote);
 
-        // Update the vote count
         if (isUpvote) {
             answer.upvote();
+            answerAuthor.setReputation(answerAuthor.getReputation() + 1);
         } else {
             answer.downvote();
+            answerAuthor.setReputation(answerAuthor.getReputation() - 1);
         }
         answerRepository.save(answer);
+        userService.saveExistingUser(answerAuthor);
 
         return "Vote applied successfully";
     }
