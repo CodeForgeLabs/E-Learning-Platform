@@ -24,6 +24,8 @@ public class Vote {
     @DBRef
     private Question question; // Optional reference to the question being voted on (if applicable)
 
+    private Idea idea; // Optional reference to the idea being voted on (if applicable)
+
     @DBRef
     private Answer answer; // Optional reference to the answer being voted on (if applicable)
 
