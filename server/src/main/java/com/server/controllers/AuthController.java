@@ -68,6 +68,7 @@ public class AuthController {
                     "username", existingUser.get().getUsername(),
                     "profilePicture", existingUser.get().getProfilePicture(),
                     "reputation", existingUser.get().getReputation(),
+                    "profession", existingUser.get().getProfession(),
                     "roles", existingUser.get().getRoles()
             );
             System.out.println("ok 200");

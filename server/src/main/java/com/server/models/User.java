@@ -24,6 +24,8 @@ public class User {
 
     private String password;
 
+    private String profession;
+
     private int reputation = 0; // Default reputation when a user registers
 
     private LocalDateTime createdAt = LocalDateTime.now();
