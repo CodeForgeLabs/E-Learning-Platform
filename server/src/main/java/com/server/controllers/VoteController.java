@@ -23,7 +23,10 @@ public class VoteController {
         String response;
         if ("question".equalsIgnoreCase(type)) {
             response = voteService.voteQuestion(userId, id, isUpvote);
-        } else if ("answer".equalsIgnoreCase(type)) {
+        } else if ("reply".equalsIgnoreCase(type)){
+            response = voteService.voteReply(userId, id, isUpvote);
+        }
+         else if ("answer".equalsIgnoreCase(type)) {
             response = voteService.voteAnswer(userId, id, isUpvote);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid type: Use 'question' or 'answer'");
@@ -37,7 +40,10 @@ public class VoteController {
         List<Vote> votes;
         if ("question".equalsIgnoreCase(type)) {
             votes = voteService.getVotesForQuestion(id);
-        } else if ("answer".equalsIgnoreCase(type)) {
+        } else if ("reply".equalsIgnoreCase(type)){
+            votes = voteService.getVotesForReply(id);
+        }
+        else if ("answer".equalsIgnoreCase(type)) {
             votes = voteService.getVotesForAnswer(id);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -51,7 +57,10 @@ public class VoteController {
         Optional<Vote> vote;
         if ("question".equalsIgnoreCase(type)) {
             vote = voteService.getUserVoteOnQuestion(userId, id);
-        } else if ("answer".equalsIgnoreCase(type)) {
+        } else if ("Reply".equalsIgnoreCase(type)){
+            vote = voteService.getUserVoteOnReply(userId, userId);
+        }
+         else if ("answer".equalsIgnoreCase(type)) {
             vote = voteService.getUserVoteOnAnswer(userId, id);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

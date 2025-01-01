@@ -3,11 +3,13 @@ package com.server.services;
 import com.server.models.Answer;
 import com.server.models.Idea;
 import com.server.models.Question;
+import com.server.models.Reply;
 import com.server.models.User;
 import com.server.models.Vote;
 import com.server.repositories.AnswerRepository;
 import com.server.repositories.IdeaRepository;
 import com.server.repositories.QuestionRepository;
+import com.server.repositories.ReplyRepository;
 import com.server.repositories.UserRepository;
 import com.server.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class VoteService {
     private IdeaRepository ideaRepository;
 
     @Autowired
+    private ReplyRepository replyRepository;
+
+    @Autowired
     private UserService userService;
 
     // Upvote or downvote a question
@@ -45,13 +50,13 @@ public class VoteService {
         }
 
         Question question = optionalQuestion.get();
-        String questionAuthorId = question.getAuthor().getId();
-        Optional<User> questionAuthorOpt = userService.findById(questionAuthorId);
-        if (questionAuthorOpt.isEmpty()) {
+        String replyAuthorId = question.getAuthor().getId();
+        Optional<User> replyAuthorOpt = userService.findById(replyAuthorId);
+        if (replyAuthorOpt.isEmpty()) {
             return "Question author not found";
         }
 
-        User questionAuthor = questionAuthorOpt.get();
+        User questionAuthor = replyAuthorOpt.get();
 
         List<Vote> existingVotes = voteRepository.findByQuestion_Id(questionId);
         for (Vote existingVote : existingVotes) {
@@ -95,6 +100,69 @@ public class VoteService {
         }
         questionRepository.save(question);
         userService.saveExistingUser(questionAuthor);
+
+        return "Vote applied successfully";
+    }
+
+
+
+    public String voteReply(String userId, String replyId, boolean isUpvote) {
+        Optional<Reply> optionalReply = replyRepository.findById(replyId);
+        if (!optionalReply.isPresent()) {
+            return "Question not found";
+        }
+
+        Reply reply = optionalReply.get();
+        String replyAuthorId = reply.getAuthor().getId();
+        Optional<User> replyAuthorOpt = userService.findById(replyAuthorId);
+        if (replyAuthorOpt.isEmpty()) {
+            return "Reply author not found";
+        }
+
+        User replyAuthor = replyAuthorOpt.get();
+
+        List<Vote> existingVotes = voteRepository.findByReply_Id(replyId);
+        for (Vote existingVote : existingVotes) {
+            if (existingVote.getVoter().getId().equals(userId)) {
+                if (existingVote.isUpvote() == isUpvote) {
+                    return "You have already voted this way";
+                } else {
+                    existingVote.setUpvote(isUpvote);
+                    existingVote.applyVote();
+                    voteRepository.save(existingVote);
+
+                    if (isUpvote) {
+                        reply.upvote();
+                        replyAuthor.setReputation(replyAuthor.getReputation() + 1);
+                    } else {
+                        reply.downvote();
+                        replyAuthor.setReputation(replyAuthor.getReputation() - 1);
+                    }
+                    replyRepository.save(reply);
+                    userService.saveExistingUser(replyAuthor);
+
+                    return "Vote updated successfully";
+                }
+            }
+        }
+
+        // If no previous vote found, create a new vote
+        Vote vote = new Vote();
+        vote.setVoter(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+        vote.setReply(reply);
+        vote.setUpvote(isUpvote);
+        voteRepository.save(vote);
+
+        // Update the vote count and reputation
+        if (isUpvote) {
+            reply.upvote();
+            replyAuthor.setReputation(replyAuthor.getReputation() + 1);
+        } else {
+            reply.downvote();
+            replyAuthor.setReputation(replyAuthor.getReputation() - 1);
+        }
+        replyRepository.save(reply);
+        userService.saveExistingUser(replyAuthor);
 
         return "Vote applied successfully";
     }
@@ -231,6 +299,11 @@ public class VoteService {
         return voteRepository.findByIdea_Id(ideaId);
     }
 
+     // Get all votes for a specific reply
+    public List<Vote> getVotesForReply(String replyId) {
+        return voteRepository.findByReply_Id(replyId);
+    }
+
     // Get all votes for a specific answer
     public List<Vote> getVotesForAnswer(String answerId) {
         return voteRepository.findByAnswer_Id(answerId);
@@ -245,6 +318,11 @@ public class VoteService {
       // Get a user's vote on a specific idea
     public Optional<Vote> getUserVoteOnIdea(String userId, String ideaId) {
         List<Vote> votes = voteRepository.findByIdea_Id(ideaId);
+        return votes.stream().filter(vote -> vote.getVoter().getId().equals(userId)).findFirst();
+    }
+
+    public Optional<Vote> getUserVoteOnReply(String userId, String ideaId) {
+        List<Vote> votes = voteRepository.findByReply_Id(ideaId);
         return votes.stream().filter(vote -> vote.getVoter().getId().equals(userId)).findFirst();
     }
 

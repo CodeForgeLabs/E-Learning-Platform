@@ -10,6 +10,8 @@ import java.util.List;
 public interface VoteRepository extends MongoRepository<Vote, String> {
     // Find votes for a specific question by its ID
     List<Vote> findByQuestion_Id(String questionId); // Use underscores in field names
+
+    List<Vote> findByReply_Id(String replyId);
     
     List<Vote> findByIdea_Id(String questionId); // Use underscores in field names
 

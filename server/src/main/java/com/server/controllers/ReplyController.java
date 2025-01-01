@@ -2,6 +2,8 @@ package com.server.controllers;
 
 import com.server.models.Reply;
 import com.server.models.User;
+import com.server.services.VoteService;
+
 import java.util.Optional;
 import java.util.List;
 import com.server.services.AuthService;
@@ -19,6 +21,9 @@ public class ReplyController {
 
     @Autowired
     private ReplyService replyService;
+
+    @Autowired
+    private VoteService voteService;
 
     @Autowired
     private AuthService authService;
@@ -81,6 +86,17 @@ public class ReplyController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    // Upvote or downvote a question
+    @PostMapping("/{replyId}/vote")
+    public ResponseEntity<String> voteIdea(@PathVariable String replyId, @RequestParam boolean isUpvote) {
+        String username = authService.getCurrentUsername();
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(voteService.voteReply(user.get().getId(), replyId, isUpvote));
     }
 
     // Delete a reply by ID

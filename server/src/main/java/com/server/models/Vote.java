@@ -29,6 +29,8 @@ public class Vote {
     @DBRef
     private Answer answer; // Optional reference to the answer being voted on (if applicable)
 
+    @DBRef
+    private Reply reply;
     private LocalDateTime createdAt = LocalDateTime.now(); // Timestamp for when the vote was created
 
     // No-arg constructor
