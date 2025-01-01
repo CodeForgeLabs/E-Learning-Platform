@@ -68,6 +68,8 @@ public class AuthController {
                     "username", existingUser.get().getUsername(),
                     "profilePicture", existingUser.get().getProfilePicture(),
                     "reputation", existingUser.get().getReputation(),
+                    "questions_asked",existingUser.get().getQuestions_asked(),
+                    "shared_ideas",existingUser.get().getShared_idea(),
                     "roles", existingUser.get().getRoles()
             );
             System.out.println("ok 200");

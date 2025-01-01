@@ -44,9 +44,12 @@ public class QuestionController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+
         //Increment reputation based on custom value (in this case 5)
         User currentUser = user.get();
         currentUser.setReputation(currentUser.getReputation() + 15);
+        currentUser.setQuestions_asked(currentUser.getQuestions_asked() + 1);
         userService.saveExistingUser(currentUser);
 
         question.setAuthor(user.get());
