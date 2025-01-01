@@ -19,6 +19,10 @@ The **Peer-to-Peer Learning Platform** is a web-based application that allows us
 
   ![App Screenshot](./client/public/Readme_assets/Readme_landing.png)
 
+
+
+  ![App Screenshot](./client/public/Readme_assets/Readme_askQuestion.png)
+
     
 - 💡 **Idea Sharing**  
   Users can post and comment on ideas, fostering brainstorming and discussions.
@@ -28,11 +32,15 @@ The **Peer-to-Peer Learning Platform** is a web-based application that allows us
 
 
   
-- 👍 **Voting System**  
-  Users can upvote or downvote questions, answers, and ideas, offering feedback and helping the community find the best content.
-
 - 🏅 **Reputation System**  
   Users earn reputation points based on their activity, such as asking questions, providing answers, and voting on content.
+
+
+    ![App Screenshot](./client/public/Readme_assets/Readme_reputation.png)
+
+  
+- 👍 **Voting System**  
+  Users can upvote or downvote questions, answers, and ideas, offering feedback and helping the community find the best content.
 
 - 🔖 **Tagging and Searching**  
   Questions and ideas can be tagged with relevant keywords, enabling easy discovery and exploration of topics.
