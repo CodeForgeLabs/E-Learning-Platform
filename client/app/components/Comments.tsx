@@ -9,9 +9,10 @@ interface Comment {
   upvotes: number;
   description: string;
   createdAt: string;
+  isQuestion : boolean;
 } 
 
-const Comments:React.FC<Comment>   = ({id , username , profileImage , description , createdAt , upvotes}) => {
+const Comments:React.FC<Comment>   = ({id , username , profileImage , description , createdAt , upvotes , isQuestion}) => {
   return (
     
 

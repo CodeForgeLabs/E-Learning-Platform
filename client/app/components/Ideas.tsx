@@ -1,10 +1,11 @@
 import React from 'react'
 import IdeaCard from './IdeaCard'
+import Profile from './Profile'
 
 
 const Ideas = () => {
     const [filter, setFilter] = React.useState('Most recent')
-    const Ideas = [{id: "1", username : "Natib", title : "Why sprigboot is better than Nodejs", description : "Spring Boot is built on the top of the spring and contains all the features of spring. And is becoming favourite of developer’s these days because of it’s a rapid production-ready environment which enables the developers to directly focus on the logic instead of struggling with the configuration and set up. Spring Boot is a microservice-based framework and making a production-ready application in it takes very less time. Prerequisite for Spring Boot is the basic knowledge Spring framework. For revising the concepts of spring framework" ,profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",  upvotes : 10, tags : ["BACKEND", "JAVA"]}, {
+    const Ideas = [{id: "1", username : "Natib", title : "Why sprigboot is better than Nodejs", description : "Spring Boot is built on the top of the spring and contains all the features of spring. And is becoming favourite of developer’s these days because of it’s a rapid production-ready environment which enables the developers to directly focus on the logic instead of struggling with the configuration and set up. Spring Boot is a microservice-based framework and making a production-ready application in it takes very less time. Prerequisite for Spring Boot is the basic knowledge Spring framework. For revising the concepts of spring framework" ,profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s", reputation : 10 ,   upvotes : 10, tags : ["BACKEND", "JAVA"]}, {
         id: "2",
         username: "Fish",
         title: "Why VS Code might be more useful than IntelliJ",
@@ -13,6 +14,7 @@ const Ideas = () => {
         upvotes: 5,
         profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
         tags: ["IDE", "TOOLS"],
+        reputation: 100
       },{
         id: "3",
         username: "Yenus",
@@ -22,6 +24,7 @@ const Ideas = () => {
         upvotes: 12,
         profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
         tags: ["FOOTBALL", "MESSI", "SPORTS"],
+        reputation: 2000
       },]
   return (
     <div className='flex flex-wrap justify-evenly pc:mx-20 tablet:px-4  max-tablet:px-4 mt-11 mb-8'>
@@ -65,6 +68,7 @@ const Ideas = () => {
             profileImage={idea.profileImage}
             upvotes={idea.upvotes}
             tags={idea.tags}
+            reputation={ idea.reputation}
           />
         ))}
 

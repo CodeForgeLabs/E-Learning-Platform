@@ -1,7 +1,8 @@
 "use client"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-interface Question {
+import Profile from "./Profile";
+interface QuestionCardProps {
     id : string;
     username: string;
     title: string;
@@ -10,18 +11,21 @@ interface Question {
     upvotes: number;
     tags: string[];
     profileImage: string;
+    reputation: number;
+
   }
   
-  const IdeaCard: React.FC<Question> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id }) => {
+  const QuestionCard: React.FC<QuestionCardProps> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id , reputation }) => {
     const router = useRouter();
   return (
-    <div onClick = {() => router.push(`idea/${id}`)} className="flex max-tablet:flex-wrap border-t-[1px] border-gray-600 border-opacity-50  py-3 mt-5">
+    <div onClick = {() => router.push(`question/${id}`)} className="flex max-tablet:flex-wrap border-t-[1px] border-gray-600 border-opacity-50  py-3 mt-5">
       <div className=" flex max-tablet:items-center  max-tablet:w-full mb-4">
-      <Image        className="mask max-tablet:w-11  tablet:w-12 tablet:h-12 rounded-full"
+      {/* <Image        className="mask max-tablet:w-11  tablet:w-12 tablet:h-12 rounded-full"
                   width="48"
                   height="48"
                   src= {profileImage}
-                  alt="pfp" />
+                  alt="pfp" /> */}
+        <Profile isNavbar = {false} isCard={true} reputation={reputation} profileImage={profileImage} />
         <p className="text-secondary ml-2 tablet:hidden">{username} <span className="text-gray-400">&#183;  {speciality }</span> </p>
       </div>
       <div className="tablet:px-4 max-tablet:px-1 tablet:w-[85%] max-tablet:w-full">
@@ -92,4 +96,4 @@ interface Question {
   )
 }
 
-export default IdeaCard
+export default QuestionCard

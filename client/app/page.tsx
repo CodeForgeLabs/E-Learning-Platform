@@ -8,12 +8,16 @@ import LeaderBoard from './components/LeaderBoard'
 import QuestionCard from './components/QuestionCard'
 import { useRouter } from 'next/navigation'
 import ShareQuestions from './components/ShareQuestions'
+import { useGetQuestionsQuery } from './features/api/apiSlice'
 
 
 const Homepage = () => {
   const [filter, setFilter] = React.useState('Most recent')
   const [shareQuestion, setShareQuestion] = React.useState(true)
   const router = useRouter()
+
+  const { data: apiQuestions, error, isLoading } = useGetQuestionsQuery();
+  console.log(apiQuestions)
 
     const Questions = [
         {
@@ -25,6 +29,7 @@ const Homepage = () => {
             "I am working on a web application that handles a lot of user data and faces frequent database interactions. What are the best practices for optimizing queries and improving database performance?",
           profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
           tags: ["DATABASE", "PERFORMANCE", "OPTIMIZATION" , "MONGO" , "SQL"],
+          reputation: 10
         },
         {
           id: "2",
@@ -35,6 +40,7 @@ const Homepage = () => {
             "I have a React app with a complex state management requirement. How can I efficiently manage a large state in Redux without compromising performance?",
           profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
           tags: ["REACT", "REDUX", "STATE-MANAGEMENT"],
+          reputation: 200
         },
         {
           id: "3",
@@ -45,6 +51,7 @@ const Homepage = () => {
             "I am designing a system based on microservices architecture and want to know the best way to handle secure communication between services. Should I use OAuth2, JWT, or some other method?",
           profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
           tags: ["MICROSERVICES", "SECURITY", "API"],
+          reputation: 100
         },
         {
           id: "4",
@@ -55,6 +62,7 @@ const Homepage = () => {
             "I am building a Next.js app and plan to use server-side rendering. What are the recommended deployment strategies and hosting options for a production environment?",
           profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
           tags: ["NEXTJS", "DEPLOYMENT", "SSR"],
+          reputation: 50
         },
         {
           id: "5",
@@ -65,6 +73,7 @@ const Homepage = () => {
             "I’ve always been curious about the mental and tactical preparation teams go through during penalty shootouts. What factors determine the success rate in such high-pressure scenarios?",
           profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
           tags: ["FOOTBALL", "STRATEGY", "SPORTS"],
+          reputation: 5
         },
       ];
       
@@ -148,6 +157,7 @@ const Homepage = () => {
             profileImage={idea.profileImage}
             upvotes={idea.upvotes}
             tags={idea.tags}
+            reputation={ idea.reputation}
           />
         ))}
 
