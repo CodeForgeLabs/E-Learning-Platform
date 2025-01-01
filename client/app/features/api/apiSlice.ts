@@ -1,22 +1,21 @@
 // src/features/api/apiSlice.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {  Question  } from './apiInterface';
+import { getSession } from 'next-auth/react';
 
 export const apiSlice = createApi({
   reducerPath: 'api', // Name of the API slice in the Redux state
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     credentials: 'include',
-    prepareHeaders: (headers) => {
+    prepareHeaders: async (headers) => {
         // Get the JWT_TOKEN cookie
-        const token = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('next-auth.session-token='))
-          ?.split('=')[1];
+        const session = await getSession()
+        console.log(session , "from api")
   
         // If the token exists, add it to the headers
-        if (token) {
-          headers.set('JWT_TOKEN', `${token}`);
+        if (session && session.token) {
+          headers.set('jwt_token', `${session?.token }`);
         }
   
         return headers;
