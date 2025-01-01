@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import Profile from "./Profile";
 interface IdeaCardProps {

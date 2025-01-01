@@ -1,5 +1,7 @@
+"use client"
 import React from 'react'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react';
 
 interface Comment {
   id: string;
@@ -10,9 +12,13 @@ interface Comment {
   description: string;
   createdAt: string;
   isQuestion : boolean;
+  author: string;
+  isAccepted: boolean;
 } 
 
-const Comments:React.FC<Comment>   = ({id , username , profileImage , description , createdAt , upvotes , isQuestion}) => {
+const Comments:React.FC<Comment>   = ({id , username , profileImage , description , createdAt , upvotes , isQuestion , author , isAccepted}) => {
+  const session = useSession()
+  
   return (
     
 
@@ -27,7 +33,18 @@ const Comments:React.FC<Comment>   = ({id , username , profileImage , descriptio
             alt="Avatar Tailwind CSS Component" />
             <div className='flex justify-between tablet:hidden w-full'> <p className="text-secondary ml-2 tablet:hidden">{username} </p> <p className='text-gray-400'>{createdAt + " ago"}</p></div>
               
-                    <div className="flex flex-col items-center w-full mt-4 max-tablet:hidden">
+                <div className="flex flex-col items-center w-full mt-4 max-tablet:hidden">
+               { 
+               isAccepted ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="green" className="size-6 ">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+              </svg> : isQuestion && author == session?.data?.username  ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+              </svg> : " "
+              
+
+                }
+
             <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
                             <svg
                     xmlns="http://www.w3.org/2000/svg"

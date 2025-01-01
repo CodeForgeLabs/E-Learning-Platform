@@ -8,7 +8,7 @@ import Profile from './Profile'
 const Navbar = () => {
   const router  = useRouter()
   const session = useSession()
-  console.log(session , "from navbar")
+
 
   return (<div className='flex-col   justify-center items-center'>
     <div className="flex justify-between border-b-[1px] border-base-300 navbar bg-base-100 ">

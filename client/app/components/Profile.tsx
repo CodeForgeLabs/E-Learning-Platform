@@ -1,7 +1,7 @@
-import React, { use } from 'react'
+import React from 'react'
 import { signOut } from "next-auth/react";
 import Image from 'next/image';
-import { Warning } from 'postcss';
+
 type ProfileProps = {
     isNavbar: boolean;
     isCard:boolean;
