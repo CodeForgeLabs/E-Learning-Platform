@@ -42,14 +42,12 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("auth/register", "auth/login")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                        // Public endpoints
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        // All other endpoints must be authenticated
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable);
-        //can use csrf((csrf)->disable()) instead of AbstractHttpConfigurer::disable
-        //doesn't change anything
 
         return http.build();
     }
