@@ -6,10 +6,11 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Head from 'next/head';
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+
 import { SessionProvider } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+
 
 export default function RootLayout({
   children,
@@ -40,13 +41,7 @@ function RootLayoutContent({
   excludeComponents: string[];
 }) {
   const found = useSelector((state: RootState) => state.found.found);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-  }, []);
+  
 
   return (
     <html lang="en" data-theme="mywhitetheme">

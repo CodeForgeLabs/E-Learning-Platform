@@ -11,7 +11,14 @@ import ShareQuestions from './components/ShareQuestions'
 import { useGetQuestionsQuery } from './features/api/apiSlice'
 
 
+
 const Homepage = () => {
+
+  
+
+
+
+ 
   const [filter, setFilter] = React.useState('Most recent')
   const [shareQuestion, setShareQuestion] = React.useState(true)
   const router = useRouter()
