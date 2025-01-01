@@ -32,6 +32,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User saveExistingUser(User user) {
+        return userRepository.save(user);
+    }
+
     //update profile picture of user
     public Optional<User> updateProfilePicture(String userId,String profilepictureUrl){
         Optional<User> user = userRepository.findById(userId);

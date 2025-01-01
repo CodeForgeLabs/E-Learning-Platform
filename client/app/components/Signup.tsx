@@ -5,22 +5,26 @@ const Signup = () => {
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
-      <dialog id="my_modal_3" className="  relative flex justify-center items-center modal">
-      <div className="relative w-[80%] h-[90%] bg-black" style={{ background: "linear-gradient(to right, #ffffff, #d1c4e9)" }}>
-          <form method="dialog ">
+      <dialog id="my_modal_3" className="  relative flex justify-center items-center modal backdrop-blur-sm">
+      <div  className="relative max-tablet:w-[90%] tablet:w-[80%] max-pc:h-full pc:h-[80vh] pc:overflow-y-scroll hide-scrollbar pc:bg-gradient-to-r max-pc:bg-none  " >
+          <form  className=" max-pc:hidden" method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button className="text-base-300 outline-none btn-sm border-none    absolute right-2 top-2 z-10">✕</button>
           </form>
-          <div className="flex h-full justify-between items-end ">
+          <div className="flex h-full justify-between  max-pc:justify-center max-pc:bg-transparent items-end ">
 
 
-          <div className="rounded-none card bg-base-100 max-tablet:w-full tablet:w-1/2 pc:w-1/3 h-full shrink-0 shadow-2xl">
+          <div className="rounded-none card bg-base-100 max-tablet:w-full tablet:w-[450px] pc:w-1/3 h-full max-pc:overflow-y-scroll pc:overflow-visible hide-scrollbar   shadow-2xl">
+          <form className='pc:hidden' method="dialog ">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="text-base-300 outline-none btn-sm border-none    absolute right-2 top-2 z-10">✕</button>
+          </form>
 
-          <div className='mt-4 flex flex-col gap-2 justify-center items-center tablet:hidden'>
+          <div className='mt-4 flex flex-col gap-2 justify-center items-center pc:hidden '>
             <p className='text-secondary text-xl font-roboto font-bold'>Join Our Community</p>
             <p className='text-secondary text-xs font-roboto'>Connect with fellow learners, share knowledge, and grow together.</p>
             </div>
-          <form className="card-body">
+          <form className="card-body bg-base-100">
   <div className="form-control">
     <label className="label">
       <span className="label-text">Full Name</span>
@@ -59,11 +63,11 @@ const Signup = () => {
 </form>
     </div>
 
-        <div className='max-pc:hidden flex flex-col justify-between items-center h-full pt-16'>
+        <div className='max-pc:hidden flex flex-col justify-between items-center h-full pt-8'>
         {/* <p className='text-base-100 text-3xl font-roboto font-bold'>Welcome to Peer to Peer</p> */}
-            <div className='flex flex-col gap-2 justify-center'>
+            <div className='flex flex-col gap-2 justify-center '>
             <p className='text-base-100 text-3xl font-roboto font-bold'>Join Our Community</p>
-            <p className='text-base-100 text-lg font-roboto'>Connect with fellow learners, share knowledge, and grow together.</p>
+            <p className='flex justify-center items-center text-center text-base-100 text-lg font-roboto'>Connect with fellow learners, share knowledge, and grow together.</p>
             </div>
             
 

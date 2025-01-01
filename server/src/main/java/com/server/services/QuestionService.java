@@ -79,6 +79,10 @@ public class QuestionService {
     public List<Question> getQuestionsByTitle(String title) {
         return questionRepository.findByTitleContainingIgnoreCase(title);
     }
+    // Get all question by most upvote
+    public List<Question> getAllQuestionsOrderedByVoteCount() {
+        return questionRepository.findByOrderByVoteCountDesc();
+    }
 
     // Find questions by a specific tag (case-insensitive)
     public List<Question> getQuestionsByTag(String tagName) {
