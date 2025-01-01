@@ -49,7 +49,9 @@ public class IdeaController {
         //Increment reputation based on custom value (in this case 5)
         User currentUser = user.get();
         currentUser.setReputation(currentUser.getReputation() + 15);
+        currentUser.setShared_idea(currentUser.getShared_idea()+1);
         userService.saveExistingUser(currentUser);
+
 
         Idea.setAuthor(user.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(ideaService.createIdea(Idea));

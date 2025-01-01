@@ -22,6 +22,10 @@ public class User {
     //url link to the image
     private String profilePicture;
 
+    private  int questions_asked = 0;
+
+    private int shared_idea = 0;
+
     private String password;
 
     private int reputation = 0; // Default reputation when a user registers
