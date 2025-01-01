@@ -1,6 +1,8 @@
 
 import { useRouter } from "next/navigation";
 import Profile from "./Profile";
+import { useVoteMutation } from "../features/api/apiSlice";
+//idea
 interface IdeaCardProps {
     id : string;
     username: string;
@@ -10,11 +12,23 @@ interface IdeaCardProps {
     upvotes: number;
     tags: string[];
     profileImage: string;
-    reputation: number; 
+    reputation: number;
+    shared_ideas : number;
+    questions_asked : number; 
   }
   
-  const IdeaCard: React.FC<IdeaCardProps> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id  ,reputation }) => {
+  const IdeaCard: React.FC<IdeaCardProps> = ({ username, title, description,speciality ,  upvotes, tags , profileImage , id  ,reputation , questions_asked , shared_ideas }) => {
     const router = useRouter();
+
+    const [vote] = useVoteMutation();
+        const handleVote = async (e: React.MouseEvent, isUpvote: boolean) => {
+          e.stopPropagation();
+          try {
+            await vote({ category: "idea", id, isUpvote });
+          } catch (err) {
+            console.error('Failed to vote:', err);
+          }
+        };
   return (
     <div onClick = {() => router.push(`idea/${id}`)} className="flex max-tablet:flex-wrap border-t-[1px] border-gray-600 border-opacity-50  py-3 mt-5">
       <div className=" flex max-tablet:items-center  max-tablet:w-full mb-4">
@@ -23,7 +37,7 @@ interface IdeaCardProps {
                   height="48"
                   src= {profileImage}
                   alt="Avatar Tailwind CSS Component" /> */}
-                  < Profile isNavbar = {false} isCard={true} reputation={reputation} profileImage={profileImage} />
+                  < Profile isNavbar = {false} isCard={true} reputation={reputation} profileImage={profileImage}  shared_ideas={shared_ideas || 0} questions_asked={questions_asked || 0}/>
         <p className="text-secondary ml-2 tablet:hidden">{username} <span className="text-gray-400">&#183;  {speciality }</span> </p>
       </div>
       <div className="tablet:px-4 max-tablet:px-1 tablet:w-[85%] max-tablet:w-full">
@@ -50,7 +64,9 @@ interface IdeaCardProps {
         </div>
       <div className="max-tablet:hidden w-10">
         <div className="flex flex-col items-center w-full mt-4 ">
-        <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
+        <button
+        onClick={(e) => handleVote(e, true)}
+         className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
                         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -67,7 +83,9 @@ interface IdeaCardProps {
                 </svg>
             </button>
 <span className="text-success">{upvotes}</span>
-          <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-b-md">
+          <button
+          onClick={(e) => handleVote(e, false)}
+           className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-b-md">
           <svg
             xmlns="http://www.w3.org/
             2000/svg"

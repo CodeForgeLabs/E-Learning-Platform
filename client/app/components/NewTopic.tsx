@@ -2,12 +2,44 @@
 import React , {useState} from 'react'
 import useTags from './hooks/useTags';
 import { TagField } from './TagField';
+import { useCreateIdeaMutation , useCreateQuestionMutation } from '../features/api/apiSlice';
+import { useRouter } from 'next/navigation';
 
 const NewTopic = () => {
+    const router = useRouter();
     const MAX_TAGS = 5;
     const { tags, handleAddTag, handleRemoveTag } = useTags(MAX_TAGS);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    
 
     const [selectedOption, setSelectedOption] = useState("Question");
+    const [createQuestion] = useCreateQuestionMutation();
+    const [createIdea] = useCreateIdeaMutation();
+
+    const handleSubmit = () => {
+      if (selectedOption === "Question") {
+        try {
+          createQuestion({ title , body: description,  tags});
+        }
+        catch (err) {
+          console.error('Failed to save the question: ', err);
+        }
+        router.push('/');
+
+     
+      }
+      else {
+        try {
+          createIdea({ title , body: description,  tags});
+        }
+        catch (err) {
+          console.error('Failed to save the idea: ', err);
+        }
+        router.push('/ideas');
+        
+      }
+    }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement> ) => {
     setSelectedOption(event.target.value);
@@ -38,9 +70,15 @@ const NewTopic = () => {
 
                 </div>
         <p className='mt-4 font-medium'>Title</p>       
-        <input placeholder='Enter title here' className=' focus:border-secondary bg-base-300 border-[1px] border-opacity-30 border-base-300 rounded-md h-10 p-2 mt-4 outline-none'></input> 
+        <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+
+         placeholder='Enter title here' className=' focus:border-secondary bg-base-300 border-[1px] border-opacity-30 border-base-300 rounded-md h-10 p-2 mt-4 outline-none'></input> 
         <p className='mt-4 font-medium'>Description</p>
-        <textarea  
+        <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}  
   onInput={(e) => {
     (e.target as HTMLTextAreaElement).style.height = "auto"; // Reset height to calculate new height
     (e.target as HTMLTextAreaElement).style.height = `${(e.target as HTMLTextAreaElement).scrollHeight}px`; // Set height based on content
@@ -54,7 +92,9 @@ const NewTopic = () => {
           maxTags={MAX_TAGS}
         />
 
-        <button className='btn mt-5'>Create</button>
+        <button 
+        onClick = {handleSubmit}
+        className='btn mt-5'>Create</button>
 
         
     </div>

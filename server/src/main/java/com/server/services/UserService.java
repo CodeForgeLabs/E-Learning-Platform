@@ -25,7 +25,13 @@ public class UserService {
 
         // Encrypt password and assign default fields
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setProfilePicture("https://imgur.com/hepj9ZS"); // this is a default userProfile for every user
+        if(user.getProfilePicture() == null)
+            user.setProfilePicture("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s");
+        else{
+            user.setProfilePicture(user.getProfilePicture());
+
+        }
+         // this is a default userProfile for every user
         user.setRoles(Set.of("ROLE_USER")); // Default role
         user.setReputation(0); // Default reputation
 

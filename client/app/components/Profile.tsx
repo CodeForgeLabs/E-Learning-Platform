@@ -7,9 +7,11 @@ type ProfileProps = {
     isCard:boolean;
     reputation:number;
     profileImage:string;
+    questions_asked : number;
+    shared_ideas: number;
   };
   
-  const Profile: React.FC<ProfileProps> = ({ isNavbar , reputation , isCard , profileImage }) => {
+  const Profile: React.FC<ProfileProps> = ({ isNavbar , reputation , isCard , profileImage , shared_ideas , questions_asked }) => {
     const level = (reputation: number): [number, number] => {
         if (reputation < 100) {
           return [1, reputation];
@@ -52,7 +54,7 @@ type ProfileProps = {
 
     </div>
     <div className="stat-title">Questions Asked</div>
-    <div className="stat-value">31</div>
+    <div className="stat-value">{questions_asked}</div>
     <div className="stat-desc">Jan 1st - now</div>
   </div>
 
@@ -72,7 +74,7 @@ type ProfileProps = {
 </svg>
     </div>
     <div className="stat-title">Shared Ideas</div>
-    <div className="stat-value">11</div>
+    <div className="stat-value">{shared_ideas}</div>
     
   </div>
 

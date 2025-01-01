@@ -1,7 +1,54 @@
-import React from 'react'
+import React , {useState} from 'react'
 import Image from 'next/image'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const Signup = () => {
+  const [fullname, setFullname] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [profilePicture, setProfilePicture] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s")
+  const [passwordError, setPasswordError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    const router = useRouter()
+    setPasswordError('')
+
+    e.preventDefault()
+    
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match')
+      return
+    }
+
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/auth/register", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "username": username,
+        "password": password,
+        "profilePicture": profilePicture,
+      }),
+    });
+
+    if (response.ok) {
+      const res = await signIn('credentials', {
+            redirect: false,
+            username: username,
+            password: password,
+          })
+      if (res?.ok){
+        router.push("/")
+      }
+
+    } else {
+      const errorData = await response.json();
+      setPasswordError(errorData?.message || 'An error occurred')
+    }
+  }
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
@@ -29,23 +76,36 @@ const Signup = () => {
     <label className="label">
       <span className="label-text">Full Name</span>
     </label>
-    <input type="text" placeholder="Full Name" className="input input-bordered" required />
+    <input
+    value={fullname}
+    onChange={(e) => setFullname(e.target.value)}
+    type="text" placeholder="Full Name" className="input input-bordered" required />
   </div>
   <div className="form-control">
     <label className="label">
       <span className="label-text">Username</span>
     </label>
-    <input type="text" placeholder="Username" className="input input-bordered" required />
+    <input
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+     type="text" placeholder="Username" className="input input-bordered" required />
   </div>
   <div className="form-control">
     <label className="label">
       <span className="label-text">Password</span>
     </label>
-    <input type="password" placeholder="Password" className="input input-bordered" required />
+    <input
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+     type="password" placeholder="Password" className="input input-bordered" required />
     <label className="label">
       <span className="label-text">Confirm Password</span>
     </label>
-    <input type="password" placeholder="Confirm Password" className="input input-bordered" required />
+    <p className="text-error">{passwordError}</p>
+    <input
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+     type="password" placeholder="Confirm Password" className="input input-bordered" required />
   </div>
   <div className="form-control">
   <label className="label mt-3">
@@ -58,7 +118,9 @@ const Signup = () => {
     />
   </div>
   <div className="form-control mt-6">
-    <button className="btn btn-base-300">Sign Up</button>
+    <button
+    onClick={handleSubmit}
+     className="btn btn-base-300">Sign Up</button>
   </div>
 </form>
     </div>

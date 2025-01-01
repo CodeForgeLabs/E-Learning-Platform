@@ -2,6 +2,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {  Question , Answer , Comment  , Reply } from './apiInterface';
 import { getSession } from 'next-auth/react';
+import { create } from 'domain';
 
 
 export const apiSlice = createApi({
@@ -81,12 +82,77 @@ export const apiSlice = createApi({
           method: 'POST',
           body:{
             "body" : body,
-            "question" : {
+            "idea" : {
                 "id" : id
             } 
           },
         }),
       }),
+
+      vote: builder.mutation({
+        query: ({ id, isUpvote , category }) => ({
+          url: `api/${category}/${id}/vote`,
+          method: 'POST',
+          params: { 
+            isUpvote : isUpvote },
+        }),
+      }),
+
+
+
+      createQuestion: builder.mutation({
+        query: ({title , body , tags}) => ({
+          url: 'api/questions',
+          method: 'POST',
+          body: {
+            "title" : title,
+            "body" : body,
+            "tags" : tags
+          },
+        }),
+      }),
+
+      createIdea: builder.mutation({
+        query: ({title , body , tags}) => ({
+          url: 'api/idea',
+          method: 'POST',
+          body: {
+            "title" : title,
+            "body" : body,
+            "tags" : tags
+          },
+        }),
+      }),
+
+      deleteQuestion: builder.mutation({
+        query: (id) => ({
+          url: `api/questions/${id}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      deleteComment: builder.mutation({
+        query: (id) => ({
+          url: `api/comments/${id}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      deleteAnswer: builder.mutation({
+        query: (id) => ({
+          url: `api/answers/${id}`,
+          method: 'DELETE',
+        }),
+      }),
+
+      approveAnswer: builder.mutation({
+        query: (id) => ({
+          url: `api/answers/${id}/accept`,
+          method: 'PATCH',
+        }),
+      }),
+
+
 
 
 
@@ -108,6 +174,13 @@ export const {
   useGetIdeaByIdQuery,
   useGetReplyByIdQuery,
   useCreateReplyMutation,
+  useVoteMutation,
+  useCreateIdeaMutation,
+  useCreateQuestionMutation,
+  useDeleteQuestionMutation,
+  useDeleteCommentMutation,
+  useDeleteAnswerMutation,
+  useApproveAnswerMutation,
 
 } = apiSlice;
 

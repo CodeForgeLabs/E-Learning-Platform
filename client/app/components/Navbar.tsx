@@ -8,6 +8,7 @@ import Profile from './Profile'
 const Navbar = () => {
   const router  = useRouter()
   const session = useSession()
+  console.log(session)
 
 
   return (<div className='flex-col   justify-center items-center'>
@@ -73,7 +74,7 @@ const Navbar = () => {
 
   <div className="flex justify-evenly items-center navbar-end w-1/4 ml-4">
     { session.data ?  
-    <Profile isCard={false} reputation={1220} profileImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s" isNavbar = {true} /> 
+    <Profile isCard={false} reputation={session.data.reputation || 0} profileImage={session.data.profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s"} isNavbar = {true} shared_ideas={session.data.shared_ideas|| 0} questions_asked={session.data.questions_asked || 0} /> 
     
     : <a className="btn btn-ghost btn-sm " onClick={() => router.push("/login")}>Login</a>}
     
