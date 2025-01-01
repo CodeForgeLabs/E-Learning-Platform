@@ -5,7 +5,8 @@ import CardSkeleton from '@/app/components/CardSkeleton'
 import Comments from '@/app/components/Comments'
 import TextBox from '@/app/components/TextBox'
 
-interface Comment {
+
+interface Answers {
   id: string;
   username: string;
   profileImage: string;
@@ -13,9 +14,16 @@ interface Comment {
   upvotes: number;
   description: string;
   createdAt: string;
-} 
+}
 
-interface Idea {
+interface Comment {
+    id: string;
+    username: string;
+    description: string;
+    createdAt: string;
+}
+
+interface Question {
   id : string;
   username: string;
   title: string;
@@ -24,17 +32,34 @@ interface Idea {
   upvotes: number;
   tags: string[];
   profileImage: string;
-  comments : Comment[];
+  answers : Answers[];
   createdAt: string;
 }
 
 const page  = () => {
   const loading = false
-  const idea: Idea = {
+  const comments: Comment[] = [{
+    id: "1",
+    username: "Natib",
+    description: "Spring Boot is built on the top of the Spring framework and contains all its powerful features.",
+
+    
+   
+    createdAt: "10 days ago",
+  } , 
+  {id: "2",
+    username: "Natib",
+    description: "Spring Boot is built on the top of the Spring framework and contains all its powerful features. It has become a favorite of developers due to its rapid production-ready environment, enabling developers to focus directly on the logic rather than struggling with configuration and setup",
+
+    
+    createdAt: "10 days ago",
+}
+]
+  const question: Question = {
     id: "1",
     speciality: "Software Engineer",
     username: "Natib",
-    title: "Why Spring Boot is Better than Node.js?",
+    title: "Why Spring Boot is Better than Node.js??",
     description:
       "Spring Boot is built on the top of the Spring framework and contains all its powerful features. It has become a favorite of developers due to its rapid production-ready environment, enabling developers to focus directly on the logic rather than struggling with configuration and setup.\n\n" +
       "One of the standout features of Spring Boot is its rich ecosystem, which includes built-in support for data integration, security, and cloud deployments. This makes it highly suitable for enterprise-level applications requiring complex functionalities such as ERP systems, CRM, and project management tools. It integrates seamlessly with various database systems and APIs, reducing the overhead of manual configurations.\n\n" +
@@ -46,7 +71,7 @@ const page  = () => {
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
     upvotes: 10,
     createdAt: "10 days ago",
-    comments: [{
+    answers: [{
       id: "10",
       username: "Fish",
       profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
@@ -78,7 +103,7 @@ const page  = () => {
 
 
               <div className=' border-b-[1px] border-gray-600 border-opacity-30 mb-2 py-4'>
-              <p className='text-2xl   py-2'>{idea.title}</p>
+              <p className='text-2xl   py-2'>{question.title}</p>
               <p className='flex text-gray-400 text-sm'>{10  + " days ago"} &#183; {1  + " replies"} &#183; {20 +  " views"}  </p>
               </div>
 
@@ -91,9 +116,9 @@ const page  = () => {
               <Image        className="mask max-tablet:w-11  tablet:w-12 tablet:h-12 rounded-full"
                           width="48"
                           height="48"
-                          src= {idea.profileImage}
+                          src= {question.profileImage}
                           alt="Avatar Tailwind CSS Component" />
-                <p className="text-secondary ml-2 tablet:hidden">{idea.username} <span className="text-gray-400">&#183;  {idea.speciality }</span> </p>
+                <p className="text-secondary ml-2 tablet:hidden">{question.username} <span className="text-gray-400">&#183;  {question.speciality }</span> </p>
                                   <div className="flex flex-col items-center w-full mt-4 max-tablet:hidden">
                           <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
                                           <svg
@@ -111,7 +136,7 @@ const page  = () => {
                                   />
                                   </svg>
                               </button>
-                  <span className="text-success">{idea.upvotes}</span>
+                  <span className="text-success">{question.upvotes}</span>
                             <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-b-md">
                             <svg
                               xmlns="http://www.w3.org/
@@ -136,11 +161,11 @@ const page  = () => {
               </div>
 
               <div className=' max-tablet:px-2 tablet:px-4 tablet:py-2  tablet:w-[85%]'>
-              <p className="text-secondary max-tablet:hidden mb-2">{idea.username} <span className="text-gray-400">&#183;  {idea.speciality }</span> </p>
-              <p className=''>{idea.description}</p>
+              <p className="text-secondary max-tablet:hidden mb-2">{question.username} <span className="text-gray-400">&#183;  {question.speciality }</span> </p>
+              <p className=''>{question.description}</p>
 
                   <div className="flex items-center  flex-wrap my-4 gap-2 ">
-                  {idea.tags.map((tag , index) => (
+                  {question.tags.map((tag , index) => (
                         <div key={index} className="flex items-center tag px-2 py-[2px] border rounded-md mr-2 bg-base-200 shadow-sm text-sm font-medium  ">{tag}</div>
                       ))}
 
@@ -149,6 +174,23 @@ const page  = () => {
                     </svg>
 
                     </div>
+
+                <div className=' pl-6'>
+                    {comments.map((comment) => (
+                        <div key={comment.id} className='border-t-[1px] border-base-300 py-2'>
+                            <p className='text-[13px]'>{comment.description} <span className='text-secondary mx-1'>-{" "+ comment.username}</span><span className='mx-1 text-gray-600'>{comment.createdAt}</span></p>
+                            
+                            
+                        </div>
+                    ))}
+
+                <div className="flex items-center border-y-[1px]">
+                  <input type="text" placeholder="Add a comment" className="w-full px-2 py-1 outline-none" />
+                  <button className="p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFF"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
+                  </button>
+                </div>
+                </div>
 
                 </div>
               </div>
@@ -159,9 +201,9 @@ const page  = () => {
             
             {
               <div className='px-4 py-4  border rounded-md border-gray-600 border-opacity-40'>
-                <p className='font-bold  my-3 pb-3 '>{idea.comments.length} replies</p>
-                {idea.comments.map((comment) => (
-                  <Comments key={comment.id} isQuestion = {false} id={comment.id} username={comment.username} profileImage={comment.profileImage} upvotes={comment.upvotes} description={comment.description} createdAt={comment.createdAt} />
+                <p className='font-bold  my-3 pb-3 '>{question.answers.length} Answers</p>
+                {question.answers.map((answer) => (
+                  <Comments  isQuestion = {true} key={answer.id} id={answer.id} username={answer.username} profileImage={answer.profileImage} upvotes={answer.upvotes} description={answer.description} createdAt={answer.createdAt} />
                 ))}
                 </div>
               } 

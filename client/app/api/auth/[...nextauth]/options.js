@@ -24,11 +24,24 @@ export const options = {
               username : credentials?.username,
               password: credentials?.password,
             }),
-            credentials: "include",
+
           });
   
           const user = await res.json();
-          console.log("User: from the authorize body", user);
+           // Capture the JWT_token header
+           const rawToken = res.headers.get('JWT_TOKEN');
+           const token = rawToken && rawToken.split(':')[1]?.trim().replace(/^"|"$/g, '');
+        if (token) {
+          
+          // Store the token in a cookie
+          setCookie(null, 'JWT_TOKEN', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            path: '/',
+            sameSite: 'Lax',
+          });
+        }
+        
   
           // If no user or error, return null
           if (!res.ok || !user) {
@@ -55,7 +68,7 @@ export const options = {
     //called whenever we check session fro the frontend
     async session({ session, token }) {
   
-        session.email = token.username
+        session.username = token.username
         session.profilePicture = token.profilePicture
         return session;
     },
@@ -63,14 +76,22 @@ export const options = {
     //user comes from my backend
     async jwt({ token , user }) {
       if (user) {
+        
         token.username = user.username;
       
         token.profilePicture = user.profilePicture;
       }
         return token;
       },
+
+      
     
       
-  }
+  },
+  
+ 
+
+  
+  
 
 }

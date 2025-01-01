@@ -2,9 +2,14 @@
 import React from 'react'
 import ThemeController from './ThemeController'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import Profile from './Profile'
 
 const Navbar = () => {
   const router  = useRouter()
+  const session = useSession()
+  console.log(session , "from navbar")
+
   return (<div className='flex-col   justify-center items-center'>
     <div className="flex justify-between border-b-[1px] border-base-300 navbar bg-base-100 ">
   <div className="navbar-start">
@@ -35,6 +40,7 @@ const Navbar = () => {
           <li><a onClick={() => router.push("/requirements")}>Requirement analysis</a></li>
             <li><a>Documentation</a></li>
             <li><a>use case</a></li>
+            <li><a>My Questions</a></li>
           </ul>
         </li>
         <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
@@ -65,8 +71,12 @@ const Navbar = () => {
   <input placeholder='Search......' className='bg-base-200   h-8 pc:w-3/4 tablet:w-[60%] max-tablet:hidden outline-none border rounded-md p-1 '></input>
   
 
-  <div className="navbar-end w-1/4">
-    <a className="btn btn-ghost btn-sm " onClick={() => router.push("/login")}>Login</a>
+  <div className="flex justify-evenly items-center navbar-end w-1/4 ml-4">
+    { session.data ?  
+    <Profile isCard={false} reputation={1220} profileImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s" isNavbar = {true} /> 
+    
+    : <a className="btn btn-ghost btn-sm " onClick={() => router.push("/login")}>Login</a>}
+    
   <ThemeController  />
   </div>
 
