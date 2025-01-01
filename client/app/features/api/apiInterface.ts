@@ -1,8 +1,10 @@
 interface Author {
     id: string;
     username: string;
-    email: string;
-    profilePicture: string | null;
+    email: string
+    profilePicture: string;
+    questions_asked: number;
+    shared_idea: number;
     password: string;
     reputation: number;
     createdAt: string;
@@ -11,13 +13,43 @@ interface Author {
 
 interface Question {
     id: string;
-    title: string | null;
-    body: string | null;
+    title: string 
+    body: string 
     voteCount: number;
-    author: Author | null;
-    tags: string[] | null;
+    author: Author 
+    tags: string[] 
     createdAt: string;
 }
 
 
-export type {Question , Author}
+interface Answer {
+    id: string;
+    body: string;
+    voteCount: number;
+    accepted: boolean;
+    question: Question;
+    author: Author;
+    createdAt: string;
+  }
+
+  interface Reply {
+    id: string;
+    body: string;
+    voteCount: number;
+    
+    question: Question;
+    author: Author;
+    createdAt: string;
+  }
+interface Comment {
+    id: string;
+    body: string;
+    createdAt: string;
+    author: Author;
+    question: Question;
+  }
+
+
+
+
+export type {Question , Author , Answer , Comment , Reply}

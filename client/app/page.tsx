@@ -1,107 +1,45 @@
 "use client"
 import React , {useEffect} from 'react'
 import Loading from './components/Loading'
-import { useDispatch , useSelector } from 'react-redux'
-import {setInitialLoading} from './features/loading/loadingSlice'
-import { RootState } from './store'
+
 import LeaderBoard from './components/LeaderBoard'
 import QuestionCard from './components/QuestionCard'
 import { useRouter } from 'next/navigation'
 import ShareQuestions from './components/ShareQuestions'
 import { useGetQuestionsQuery } from './features/api/apiSlice'
+import { useSession } from 'next-auth/react'
 
 
 
 const Homepage = () => {
 
-  
-
-
-
- 
+  const session = useSession()
   const [filter, setFilter] = React.useState('Most recent')
   const [shareQuestion, setShareQuestion] = React.useState(true)
   const router = useRouter()
 
-  const { data: apiQuestions, error, isLoading } = useGetQuestionsQuery();
-  console.log(apiQuestions)
+  useEffect(() => {
+    if (session.status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [session, router]);
 
-    const Questions = [
-        {
-          id: "1",
-          username: "JohnDoe",
-          upvotes: 12,
-          title: "How can I optimize database queries for high-traffic websites?",
-          description:
-            "I am working on a web application that handles a lot of user data and faces frequent database interactions. What are the best practices for optimizing queries and improving database performance?",
-          profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
-          tags: ["DATABASE", "PERFORMANCE", "OPTIMIZATION" , "MONGO" , "SQL"],
-          reputation: 10
-        },
-        {
-          id: "2",
-          username: "CodeMaster",
-          upvotes: 8,
-          title: "What are the best practices for managing large state in Redux?",
-          description:
-            "I have a React app with a complex state management requirement. How can I efficiently manage a large state in Redux without compromising performance?",
-          profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
-          tags: ["REACT", "REDUX", "STATE-MANAGEMENT"],
-          reputation: 200
-        },
-        {
-          id: "3",
-          username: "JaneTech",
-            upvotes: 5,
-          title: "How do microservices handle cross-service communication securely?",
-          description:
-            "I am designing a system based on microservices architecture and want to know the best way to handle secure communication between services. Should I use OAuth2, JWT, or some other method?",
-          profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
-          tags: ["MICROSERVICES", "SECURITY", "API"],
-          reputation: 100
-        },
-        {
-          id: "4",
-          username: "DevGuru",
-            upvotes: 3,
-          title: "What is the best way to deploy a Next.js app with server-side rendering?",
-          description:
-            "I am building a Next.js app and plan to use server-side rendering. What are the recommended deployment strategies and hosting options for a production environment?",
-          profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
-          tags: ["NEXTJS", "DEPLOYMENT", "SSR"],
-          reputation: 50
-        },
-        {
-          id: "5",
-          username: "SoccerFan99",
-            upvotes: 10,
-          title: "What strategies do professional football teams use to handle penalty shootouts?",
-          description:
-            "I’ve always been curious about the mental and tactical preparation teams go through during penalty shootouts. What factors determine the success rate in such high-pressure scenarios?",
-          profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
-          tags: ["FOOTBALL", "STRATEGY", "SPORTS"],
-          reputation: 5
-        },
-      ];
-      
+
+  const { data: Questions, error, isLoading } = useGetQuestionsQuery();
+  
   
 
-  const initialLoading = useSelector((state : RootState) => state.loading.initialLoading)
+  if (isLoading) 
+    return <Loading />;
 
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (initialLoading ) {
-      setTimeout(() => {
-        dispatch(setInitialLoading())
-      }, 2000)
+  if (error) 
+    return <div>Error loading questions</div>;
+  
       
-    }
-    
-  })
+  
   return (
     <div className='flex flex-grow'>
-      {initialLoading ? (
+      {isLoading ? (
 
           <Loading />
       
@@ -128,7 +66,7 @@ const Homepage = () => {
 
 
             <div className='flex items-end justify-between mb-4'>
-            <p className=' pc:text-lg max-pc:text-base'>{Questions.length} Questions</p>
+            <p className=' pc:text-lg max-pc:text-base'>{Questions ? Questions.length : 0} Questions</p>
             <div className="dropdown dropdown-end">
         <div tabIndex={0} role="button" className="btn btn-sm  m-1">{filter} <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -153,18 +91,18 @@ const Homepage = () => {
         </div>
 
 
-        {Questions.map((idea , index) => (
+        {Questions && Questions.map((question , index) => (
             <QuestionCard
-            key={idea.id || index} // Use a unique property like `id` if available, otherwise fallback to index
-            id={idea.id}
-            username={idea.username}
-            title={idea.title}
-            description={idea.description}
+            key={question.id || index} // Use a unique property like `id` if available, otherwise fallback to index
+            id={question.id}
+            username={question.author.username}
+            title={question.title}
+            description={question.body}
             speciality='Software Engineer'
-            profileImage={idea.profileImage}
-            upvotes={idea.upvotes}
-            tags={idea.tags}
-            reputation={ idea.reputation}
+            profileImage={question.author.profilePicture}
+            upvotes={question.voteCount}
+            tags={question.tags}
+            reputation={ question.author.reputation}
           />
         ))}
 
@@ -205,3 +143,5 @@ const Homepage = () => {
 }
 
 export default Homepage
+
+

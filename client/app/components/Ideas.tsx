@@ -1,31 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import IdeaCard from './IdeaCard'
-import Profile from './Profile'
+import { useGetIdeasQuery } from '../features/api/apiSlice'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import Loading from './Loading'
+
 
 
 const Ideas = () => {
+  const session = useSession()
+  const router = useRouter()
+  
+    useEffect(() => {
+      if (session.status === 'unauthenticated') {
+        router.push('/login');
+      }
+    }, [session, router]);
     const [filter, setFilter] = React.useState('Most recent')
-    const Ideas = [{id: "1", username : "Natib", title : "Why sprigboot is better than Nodejs", description : "Spring Boot is built on the top of the spring and contains all the features of spring. And is becoming favourite of developer’s these days because of it’s a rapid production-ready environment which enables the developers to directly focus on the logic instead of struggling with the configuration and set up. Spring Boot is a microservice-based framework and making a production-ready application in it takes very less time. Prerequisite for Spring Boot is the basic knowledge Spring framework. For revising the concepts of spring framework" ,profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s", reputation : 10 ,   upvotes : 10, tags : ["BACKEND", "JAVA"]}, {
-        id: "2",
-        username: "Fish",
-        title: "Why VS Code might be more useful than IntelliJ",
-        description:
-          "VS Code is lightweight and faster to open, making it ideal for interns or beginners who don't need the heavy feature set of IntelliJ. It's highly customizable with extensions, allowing users to tailor it to their specific needs without overwhelming complexity.",
-        upvotes: 5,
-        profileImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s",
-        tags: ["IDE", "TOOLS"],
-        reputation: 100
-      },{
-        id: "3",
-        username: "Yenus",
-        title: "Why Messi has proven that he is the best footballer",
-        description:
-          "Messi's unparalleled consistency in scoring and playmaking, combined with his ability to perform under pressure, has set him apart. Winning the World Cup, multiple Ballon d'Or awards, and dominating across different leagues solidifies his legacy as the greatest footballer of all time.",
-        upvotes: 12,
-        profileImage: "https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0=",
-        tags: ["FOOTBALL", "MESSI", "SPORTS"],
-        reputation: 2000
-      },]
+
+    const { data: Ideas, error, isLoading } = useGetIdeasQuery();
+
+    if (isLoading) 
+      return <Loading />;
+  
+    if (error) 
+      return <div>Error loading questions</div>;
+
+    
   return (
     <div className='flex flex-wrap justify-evenly pc:mx-20 tablet:px-4  max-tablet:px-4 mt-11 mb-8'>
         <div className='flex-col max-pc:w-full pc:w-2/3 '>
@@ -57,18 +58,18 @@ const Ideas = () => {
                 </div>
         </div>
 
-        {Ideas.map((idea , index) => (
+        {Ideas && Ideas.map((idea , index) => (
             <IdeaCard
             key={idea.id || index} // Use a unique property like `id` if available, otherwise fallback to index
             id={idea.id}
-            username={idea.username}
+            username={idea.author.username}
             title={idea.title}
-            description={idea.description}
+            description={idea.body}
             speciality='Software Engineer'
-            profileImage={idea.profileImage}
-            upvotes={idea.upvotes}
+            profileImage={idea.author.profilePicture}
+            upvotes={idea.voteCount}
             tags={idea.tags}
-            reputation={ idea.reputation}
+            reputation={ idea.author.reputation}
           />
         ))}
 

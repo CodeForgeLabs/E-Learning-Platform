@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import Typingeffect from './Typingeffect'
 import Signup from './Signup'
 import { signIn } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
+
 import { useRouter } from 'next/navigation'
 
 
 const Login = () => {
-  const session = useSession()
+  
   const router = useRouter()
   const [username , setUsername] = useState<string>('')
   const [password , setPassword] = useState<string>('')
@@ -20,8 +20,7 @@ const Login = () => {
       username: username,
       password: password,
     })
-    console.log(res)
-    console.log(session)
+ 
     if (res?.ok){
       router.push("/")
     }
