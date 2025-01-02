@@ -6,6 +6,7 @@ import CardSkeleton from '@/app/components/CardSkeleton'
 import Comments from '@/app/components/Comments'
 import TextBox from '@/app/components/TextBox'
 import { useGetIdeaByIdQuery , useGetReplyByIdQuery , useCreateReplyMutation, useVoteMutation } from '@/app/features/api/apiSlice'
+import { formatDistanceToNow } from 'date-fns'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
@@ -58,8 +59,7 @@ const Page  = () => {
   };
   if (error || replyError )
     return <p>error</p>
-  if (isLoading || replyLoading) 
-    return <p>load</p>
+  
   
   return (
     <div className='flex flex-wrap justify-evenly pc:mx-20 pc:px-4   mt-8 mb-8'>
@@ -74,7 +74,9 @@ const Page  = () => {
 
               <div className=' border-b-[1px] border-gray-600 border-opacity-30 mb-2 py-4'>
               <p className='text-2xl   py-2'>{idea?.title}</p>
-              <p className='flex text-gray-400 text-sm'>{10  + " days ago"} &#183; {1  + " replies"} &#183; {20 +  " views"}  </p>
+              <p className='flex text-gray-400 text-sm'>{ idea && formatDistanceToNow(new Date(idea.createdAt || ''), {
+                                  addSuffix: true,
+                                })} &#183; {reply?.length  + " replies"} &#183; {20 +  " views"}  </p>
               </div>
 
 
@@ -159,8 +161,10 @@ const Page  = () => {
             {
               <div className='px-4 py-4  border rounded-md border-gray-600 border-opacity-40'>
                 <p className='font-bold  my-3 pb-3 '>{reply ? reply.length : 0}replies</p>
-                {reply && reply.map((comment) => (
-                  <Comments key={comment.id} isQuestion = {false} id={comment.id} username={comment.author.username} profileImage={comment.author.profilePicture} upvotes={comment.voteCount} description={comment.body} createdAt={comment.createdAt}  isAccepted = {false} author={""}/>
+                {replyLoading ? <CardSkeleton/ > : reply && reply.map((comment) => (
+                  <Comments key={comment.id} isQuestion = {false} id={comment.id} username={comment.author.username} profileImage={comment.author.profilePicture} upvotes={comment.voteCount} description={comment.body}  createdAt={formatDistanceToNow(new Date(comment.createdAt), {
+                                                        addSuffix: false,
+                                                      })}  isAccepted = {false} author={""}/>
                 ))}
                 </div>
               } 
