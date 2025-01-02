@@ -21,7 +21,7 @@ public class VoteController {
     @PostMapping("/{type}/{id}")
     public ResponseEntity<String> vote(@RequestParam String userId, @PathVariable String type, @PathVariable String id, @RequestParam boolean isUpvote) {
         String response;
-        if ("question".equalsIgnoreCase(type)) {
+        if ("questions".equalsIgnoreCase(type)) {
             response = voteService.voteQuestion(userId, id, isUpvote);
         } else if ("answer".equalsIgnoreCase(type)) {
             response = voteService.voteAnswer(userId, id, isUpvote);

@@ -25,7 +25,15 @@ public class Reply {
 
     @DBRef
     private Idea idea;
+    private int voteCount = 0;
+    public void upvote() {
+        this.voteCount++;
+    }
 
+    // Method to decrease vote count
+    public void downvote() {
+        this.voteCount--;
+    }
     // No-arg constructor
     public Reply() {}
 }

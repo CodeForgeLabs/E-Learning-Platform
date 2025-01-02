@@ -51,7 +51,10 @@ export const options = {
       // Pass token data to session
       session.username = token.username;
       session.profilePicture = token.profilePicture;
-      session.token = token.token; // Pass JWT token to session
+      session.token = token.token;
+      session.shared_ideas = token.shared_ideas
+      session.questions_asked = token.questions_asked
+      session.reputation = token.reputation // Pass JWT token to session
       return session;
     },
 
@@ -60,7 +63,10 @@ export const options = {
       if (user) {
         token.username = user.username;
         token.profilePicture = user.profilePicture;
-        token.token = user.token; // Store JWT token in token object
+        token.token = user.token;
+        token.questions_asked = user.questions_asked
+        token.shared_ideas = user.shared_ideas
+        token.reputation = user.reputation // Store JWT token in token object
       }
       return token;
     },

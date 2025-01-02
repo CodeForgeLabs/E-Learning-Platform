@@ -70,6 +70,8 @@ const Ideas = () => {
             upvotes={idea.voteCount}
             tags={idea.tags}
             reputation={ idea.author.reputation}
+            shared_ideas={idea.author.shared_idea}
+            questions_asked={idea.author.questions_asked}
           />
         ))}
 

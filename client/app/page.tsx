@@ -35,6 +35,7 @@ const Homepage = () => {
   if (error) 
     return <div>Error loading questions</div>;
   
+  
       
   
   return (
@@ -93,7 +94,7 @@ const Homepage = () => {
 
         {Questions && Questions.map((question , index) => (
             <QuestionCard
-            key={question.id || index} // Use a unique property like `id` if available, otherwise fallback to index
+            key={question.id } // Use a unique property like `id` if available, otherwise fallback to index
             id={question.id}
             username={question.author.username}
             title={question.title}
@@ -103,6 +104,8 @@ const Homepage = () => {
             upvotes={question.voteCount}
             tags={question.tags}
             reputation={ question.author.reputation}
+            shared_ideas = {question.author.shared_idea}
+            questions_asked = {question.author.questions_asked}
           />
         ))}
 

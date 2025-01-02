@@ -1,25 +1,48 @@
 "use client"
-import React, { useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import RelatedTopics from '@/app/components/RelatedTopics'
 import Image from 'next/image'
 import CardSkeleton from '@/app/components/CardSkeleton'
 import Comments from '@/app/components/Comments'
 import TextBox from '@/app/components/TextBox'
-import { useGetIdeaByIdQuery , useGetReplyByIdQuery , useCreateReplyMutation } from '@/app/features/api/apiSlice'
-import { usePathname } from 'next/navigation'
+import { useGetIdeaByIdQuery , useGetReplyByIdQuery , useCreateReplyMutation, useVoteMutation } from '@/app/features/api/apiSlice'
+import { usePathname, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 
 
 
 
 const Page  = () => {
+  const session = useSession()
+  const router = useRouter()
+  //needs fixing
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+      
+  //     if (session.status !== 'authenticated') {
+  //       await router.push('/login');
+  //     }
+  //   };
+
+  //   checkAuthentication();
+  // }, [router, status, session]);
   
   const [answerContent , setAnswerContent] = useState("")
    const pathname = usePathname();
     const id = pathname.split('/').pop() || ''
   const { data: idea, error, isLoading } = useGetIdeaByIdQuery(id);
-  const { data: reply, error: replyError, isLoading:replyLoading } = useGetReplyByIdQuery(id);
+  const { data: reply, error: replyError, isLoading:replyLoading , refetch : refetchReplies } = useGetReplyByIdQuery(id);
   const [createReply] = useCreateReplyMutation();
+  const [vote] = useVoteMutation();
+      const handleVote = async (e: React.MouseEvent, isUpvote: boolean) => {
+        e.stopPropagation();
+        try {
+          await vote({ category: "idea", id, isUpvote });
+        } catch (err) {
+          console.error('Failed to vote:', err);
+        }
+      };
 
   const handleSubmit = async () => {
     try {
@@ -28,6 +51,7 @@ const Page  = () => {
         id : id,
       }).unwrap();
       setAnswerContent('');
+      refetchReplies();
     } catch (err) {
       console.error('Failed to save the idea: ', err);
     }
@@ -66,7 +90,9 @@ const Page  = () => {
                           alt="Avatar Tailwind CSS Component" />
                 <p className="text-secondary ml-2 tablet:hidden">{idea?.author.username} <span className="text-gray-400">&#183;  Software Engineer</span> </p>
                                   <div className="flex flex-col items-center w-full mt-4 max-tablet:hidden">
-                          <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
+                          <button
+                          onClick={(e) => handleVote(e, true)}
+                           className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-t-md">
                                           <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -82,8 +108,10 @@ const Page  = () => {
                                   />
                                   </svg>
                               </button>
-                  <span className="text-success">{idea?.voteCount}</span>
-                            <button className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-b-md">
+                  <span className="text-success">{idea?.voteCount }</span>
+                            <button
+                            onClick={(e) => handleVote(e, false)}
+                             className="flex justify-center items-center hover:bg-base-300 w-full h-12 rounded-b-md">
                             <svg
                               xmlns="http://www.w3.org/
                               2000/svg"
