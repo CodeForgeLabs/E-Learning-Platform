@@ -8,6 +8,7 @@ import TextBox from '@/app/components/TextBox'
 import { usePathname, useRouter } from 'next/navigation'
 import { useGetQuestionByIdQuery , useGetAnswerByIdQuery , useCreateAnswerMutation  , useGetCommentsByIdQuery , useCreateCommentMutation, useVoteMutation , useDeleteQuestionMutation , useDeleteCommentMutation} from '@/app/features/api/apiSlice'
 import { useSession } from 'next-auth/react'
+import { formatDistanceToNow } from 'date-fns'
 
 
 
@@ -46,8 +47,7 @@ const Page  = () => {
 
   if (error || answerError || commentsError)
     return <p>error</p>
-  if (isLoading || answerLoading || commentsLoading)
-    return <p>load</p>
+ 
 
 
   const handleSubmit = async () => {
@@ -196,7 +196,7 @@ const Page  = () => {
                 <div className=' pl-6'>
                     {comments && comments.map((comment) => (
                         <div key={comment.id} className=' flex justify-between border-t-[1px] border-base-300 py-2'>
-                            <p className='text-[13px]'>{comment.body} <span className='text-secondary mx-1'>-{" "+ comment.author.username}</span><span className='mx-1 text-gray-600'>{comment.createdAt}</span></p>
+                            <p className='text-[13px]'>{comment.body} <span className='text-secondary mx-1'>-{" "+ comment.author.username}</span><span className='mx-1 text-gray-600'>{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span></p>
                             {
                 session.data && comment.author.username === session.data.username ? <svg onClick={() => handleDeletionComment(comment.id)} xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#434343"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg> : " "
               }
@@ -228,8 +228,10 @@ const Page  = () => {
             {
               <div className='px-4 py-4  border rounded-md border-gray-600 border-opacity-40'>
                 <p className='font-bold  my-3 pb-3 '>{answers ? answers.length : 0} Answers</p>
-                {answers && answers.map((answer) => (
-                  <Comments  isQuestion = {true} key={answer.id} id={answer.id} username={answer.author.username} profileImage={answer.author.profilePicture} upvotes={answer.voteCount} description={answer.body} createdAt={answer.createdAt} isAccepted = {answer.accepted} author={question?.author.username || ""} />
+                {answerLoading ?  <CardSkeleton/ > : answers && answers.map((answer) => (
+                  <Comments  isQuestion = {true} key={answer.id} id={answer.id} username={answer.author.username} profileImage={answer.author.profilePicture} upvotes={answer.voteCount} description={answer.body} createdAt={formatDistanceToNow(new Date(answer.createdAt), {
+                                      addSuffix: false,
+                                    })}  isAccepted = {answer.accepted} author={question?.author.username || ""} />
                 ))}
                 </div>
               } 

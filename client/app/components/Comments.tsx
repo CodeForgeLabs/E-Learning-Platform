@@ -61,7 +61,7 @@ const Comments:React.FC<Comment>   = ({id , username , profileImage , descriptio
             height="48"
             src= {profileImage}
             alt="Avatar Tailwind CSS Component" />
-            <div className='flex justify-between tablet:hidden w-full'> <p className="text-secondary ml-2 tablet:hidden">{username} </p> <p className='text-gray-400'>{createdAt + " ago"}</p></div>
+            <div className='flex justify-between tablet:hidden w-full'> <p className="text-secondary ml-2 tablet:hidden">{username} </p> <p className='text-gray-400'>{createdAt }</p></div>
               
                 <div className="flex flex-col items-center w-full mt-4 max-tablet:hidden">
                { 

@@ -10,9 +10,9 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [profilePicture, setProfilePicture] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwW4kzIb_8SII6G7Bl4BCPfRmLZVVtc2kW6g&s")
   const [passwordError, setPasswordError] = useState('')
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    const router = useRouter()
     setPasswordError('')
 
     e.preventDefault()

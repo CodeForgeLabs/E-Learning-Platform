@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import Profile from './Profile'
 import { useDispatch } from 'react-redux'
 import { setSearchQuery } from '../features/search/searchSlice';
+import Link from 'next/link'
 
 const Navbar = () => {
   const router  = useRouter()
@@ -47,10 +48,9 @@ const Navbar = () => {
         <li>
           <a>Get started</a>
           <ul className="p-2">
-          <li><a onClick={() => router.push("/requirements")}>Requirement analysis</a></li>
-            <li><a>Documentation</a></li>
-            <li><a>use case</a></li>
-            <li><a>My Questions</a></li>
+          
+          <li><Link href="https://github.com/CodeForgeLabs/Peer2PeerLearning">Readme</Link></li>
+         
           </ul>
         </li>
         <li><a onClick={() => router.push("/ideas")}>Ideas</a></li>
@@ -68,8 +68,8 @@ const Navbar = () => {
           <summary>Get started</summary>
           <ul className="p w-40 box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px border-[0.5px] border-base-300">
             <li><a onClick={() => router.push("/requirements")}>Requirement analysis</a></li>
-            <li><a>Documentation</a></li>
-            <li><a>use case</a></li>
+            <li><Link href="https://github.com/CodeForgeLabs/Peer2PeerLearning">Readme</Link></li>
+           
           </ul>
         </details>
       </li>
