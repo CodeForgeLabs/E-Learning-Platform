@@ -1,14 +1,23 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import ThemeController from './ThemeController'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Profile from './Profile'
+import { useDispatch } from 'react-redux'
+import { setSearchQuery } from '../features/search/searchSlice';
 
 const Navbar = () => {
   const router  = useRouter()
   const session = useSession()
-  console.log(session)
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQueryState] = useState('');
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQueryState(e.target.value);
+
+    dispatch(setSearchQuery(searchQuery));
+  };
 
 
   return (<div className='flex-col   justify-center items-center'>
@@ -69,7 +78,10 @@ const Navbar = () => {
   </div>
   
 
-  <input placeholder='Search......' className='bg-base-200   h-8 pc:w-3/4 tablet:w-[60%] max-tablet:hidden outline-none border rounded-md p-1 '></input>
+  <input
+  value={searchQuery}
+  onChange={handleSearch}
+   placeholder='Search......' className='bg-base-200   h-8 pc:w-3/4 tablet:w-[60%] max-tablet:hidden outline-none border rounded-md p-1 '></input>
   
 
   <div className="flex justify-evenly items-center navbar-end w-1/4 ml-4">
@@ -86,7 +98,10 @@ const Navbar = () => {
 </div>
 <div className='px-5 mt-3'>
 
-<input placeholder='Search......' className=' bg-transparent w-full h-10 tablet:hidden   outline-none border rounded-lg  px-2  '></input>
+<input
+value={searchQuery}
+onChange={handleSearch}
+ placeholder='Search......' className=' bg-transparent w-full h-10 tablet:hidden   outline-none border rounded-lg  px-2  '></input>
 
 </div>
 
