@@ -3,6 +3,7 @@ import counterReducer from './features/counter/counterSlice'
 import loadingReducer from './features/loading/loadingSlice'
 import foundReducer from './features/found/foundSlice'
 import { apiSlice } from './features/api/apiSlice'
+import searchReducer from './features/search/searchSlice';
 
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
     counter: counterReducer,
     loading: loadingReducer,
     found: foundReducer,
+    search: searchReducer,
     [apiSlice.reducerPath] : apiSlice.reducer
 
   },

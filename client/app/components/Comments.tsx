@@ -31,7 +31,7 @@ const Comments:React.FC<Comment>   = ({id , username , profileImage , descriptio
       await vote({ category: "answers", id, isUpvote });
       }
       else {
-        await vote({ category: "reply", id, isUpvote });
+        await vote({ category: "replies", id, isUpvote });
       }
     } catch (err) {
       console.error('Failed to vote:', err);

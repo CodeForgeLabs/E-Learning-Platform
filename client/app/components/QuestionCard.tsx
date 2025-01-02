@@ -15,10 +15,11 @@ interface QuestionCardProps {
     reputation: number;
     questions_asked : number;
     shared_ideas : number;
+    createdAt: string;
 
   }
   
-  const QuestionCard: React.FC<QuestionCardProps> = ({ id , username, title, description,speciality ,  upvotes, tags , profileImage  , reputation , shared_ideas , questions_asked }) => {
+  const QuestionCard: React.FC<QuestionCardProps> = ({ id , username, title, description,speciality ,  upvotes, tags , profileImage  , reputation , shared_ideas , questions_asked , createdAt }) => {
     const router = useRouter();
     const [vote] = useVoteMutation();
     const handleVote = async (e: React.MouseEvent, isUpvote: boolean) => {
@@ -28,6 +29,7 @@ interface QuestionCardProps {
       } catch (err) {
         console.error('Failed to vote:', err);
       }
+      
     };
   return (
     <div onClick = {() => router.push(`question/${id}`)} className="flex max-tablet:flex-wrap border-t-[1px] border-gray-600 border-opacity-50  py-3 mt-5">
@@ -56,7 +58,7 @@ interface QuestionCardProps {
   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
 </svg>
 
-        <span className="ml-1 font-light">10  <span className="font-thin opacity-50">&#183;  1 month ago</span></span>
+        <span className="ml-1 font-light">10  <span className="font-thin opacity-50">&#183; { createdAt} </span></span>
         </button>
       </div>
 
